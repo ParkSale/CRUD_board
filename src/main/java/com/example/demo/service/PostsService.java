@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.PostForm;
 import com.example.demo.domain.Posts;
 import com.example.demo.repository.PostsRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,16 @@ public class PostsService {
     @Transactional
     public void save(Posts post) {
         postsRepository.save(post);
+    }
+
+    @Transactional(readOnly = true)
+    public Posts findOne(Long postId) {
+        return postsRepository.findOne(postId);
+    }
+
+    @Transactional
+    public void delete(Long postId) {
+        postsRepository.delete(postId);
     }
 }
 

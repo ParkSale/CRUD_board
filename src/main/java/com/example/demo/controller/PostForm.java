@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PostForm {
+    private Long id;
     private String title;
     private String content;
     private String author;

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class PostController {
     public String newPost(Model model){
         PostForm postForm = new PostForm();
         postForm.setAuthor(userInfo.getUserName());
-        model.addAttribute("boardForm", postForm);
+        model.addAttribute("postForm", postForm);
         return "board/newPost";
     }
     @PostMapping("/posts/new")
@@ -41,4 +42,38 @@ public class PostController {
         return "redirect:/board/lists";
     }
 
+    @GetMapping("/posts/{postId}/read")
+    public String readPost(@PathVariable("postId") Long postId, Model model){
+        Posts post = postsService.findOne(postId);
+        model.addAttribute("post",post);
+        model.addAttribute("userName",userInfo.getUserName());
+        return "board/read";
+    }
+
+    @GetMapping("/posts/{postId}/edit")
+    public String editPost(@PathVariable("postId") Long postId, Model model){
+        Posts post = postsService.findOne(postId);
+        PostForm postForm = new PostForm();
+        postForm.setId(post.getId());
+        postForm.setAuthor(post.getAuthor());
+        postForm.setContent(post.getContent());
+        postForm.setTitle(post.getTitle());
+        model.addAttribute("post",postForm);
+        return "board/edit";
+    }
+
+    @PostMapping("/posts/{postId}/edit")
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm){
+        Posts post = postsService.findOne(postId);
+        post.setTitle(postForm.getTitle());
+        post.setContent(postForm.getContent());
+        postsService.save(post);
+        return "redirect:/board/lists";
+    }
+
+    @GetMapping("/posts/{postId}/del")
+    public String delPost(@PathVariable("postId") Long postId){
+        postsService.delete(postId);
+        return "redirect:/board/lists";
+    }
 }

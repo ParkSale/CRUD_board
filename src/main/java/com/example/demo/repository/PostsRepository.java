@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.controller.PostForm;
 import com.example.demo.domain.Posts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,5 +19,13 @@ public class PostsRepository {
 
     public void save(Posts post) {
         em.persist(post);
+    }
+
+    public Posts findOne(Long postId) {
+        return em.find(Posts.class,postId);
+    }
+
+    public void delete(Long postId) {
+        em.remove(em.find(Posts.class,postId));
     }
 }
