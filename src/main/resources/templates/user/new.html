@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
+    <title>박세일의 CRUD게시판 프로젝트</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <form class="form-signing" action="/users/new" th:object="${form}" method = "post">
+        <h2 class="form-signing-heading">회원가입</h2>
+        <label for="inputEmail" class="sr-only">이메일</label>
+        <input type="email" th:field="*{email}" id="inputEmail" class="form-control" placeholder="이메일을 입력해주세요" required autofocus>
+        <br>
+        <label for="inputPassword" class="sr-only">비밀번호</label>
+        <input type="password" th:field="*{password}"id="inputPassword" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+        <br>
+        <label for="inputName" class="sr-only">이름</label>
+        <input type="text" th:field="*{name}"id="inputName" class="form-control" placeholder="이름을 입력해주세요" required>
+        <br>
+        <button class="btn btn-primary" type="submit">가입하기</button>
+        <button class="btn btn-danger" onclick = "location.href='/'">돌아가기</button>
+    </form>
+
+</div> <!-- /container -->
+
+
+</body>
+</html>
