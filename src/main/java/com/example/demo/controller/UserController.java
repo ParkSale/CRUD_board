@@ -17,18 +17,24 @@ public class UserController {
 
     @GetMapping("/users/new")
     public String makeUserForm(Model model){
-        model.addAttribute("form",new UserForm());
+        model.addAttribute("userForm",new UserForm());
+        model.addAttribute("email","");
+        model.addAttribute("name","");
         return "user/new";
     }
 
     @PostMapping("/users/new")
-    public String newUser(UserForm form){
-        Users user = new Users();
-        user.setEmail(form.getEmail());
-        user.setName(form.getName());
-        user.setPassword(form.getPassword());
-        usersService.join(user);
-        return "redirect:/";
+    public String registerUser(UserForm userForm, Model model){
+        String ret = usersService.join(userForm);
+        model.addAttribute("userForm",userForm);
+        if(ret.equals("email")){
+            model.addAttribute("email","fail");
+        }
+        if(ret.equals("name")){
+            model.addAttribute("name","fail");
+        }
+        if(ret.equals("success")) return "redirect:/";
+        else return "user/new";
     }
 
     @GetMapping("/logout")

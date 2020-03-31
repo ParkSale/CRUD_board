@@ -18,13 +18,17 @@ public class HomeController {
     private final UsersService usersService;
     @GetMapping("/")
     public String home(Model model){
-        model.addAttribute("form",new UserForm());
+        if(userInfo.getUserName() != ""){
+            return "redirect:board/lists";
+        }
+        model.addAttribute("userForm",new UserForm());
+        model.addAttribute("state","");
         return "home";
     }
 
     @PostMapping("/login")
     public String loginCheck(UserForm userform,Model model){
-        Users users = usersService.getUserByEmail(userform.getEmail());
+        Users users = usersService.findByEmail(userform.getEmail());
         if(users == null){
             model.addAttribute("state","fail");
             return "home";

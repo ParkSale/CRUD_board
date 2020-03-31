@@ -25,7 +25,7 @@
         <h2><label for="title" class = "label label-default">제목</label></h2>
         <label th:text="*{title}" id="title" class="form-control"></label>
         <br>
-        <h2><label for="content" class = "label label-default">내용</label></h2>
+        <h2><label for="content" class = "label label-default">비밀번호</label></h2>
         <label th:text="*{content}" id="content" class="form-control"></label>
         <br>
         <h2><label for="author" class = "label label-default">작성자</label></h2>
@@ -33,7 +33,7 @@
         <br>
         <button class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" type = "submit">수정하기</button>
         <a class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" th:href = "@{/posts/{id}/del (id=${post.id})}">삭제하기</a>
-        <a class="btn btn-danger" href = "/board/lists">돌아가기</a>
+        <button class="btn btn-danger" onclick = "history.back()">돌아가기</button>
     </form>
 
 </div> <!-- /container -->
