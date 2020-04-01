@@ -19,7 +19,7 @@
 
 <div class="container">
 
-    <form class="form-signing" action="/posts/new" th:object="${postForm}" method = "post">
+    <form class="form-signing" action="/posts/new" th:object="${postForm}" method = "post" enctype="multipart/form-data">
         <a class="btn btn-warning pull-right" href = "/logout">로그아웃</a>
         <h2 class="form-signing-heading">새로운 글 쓰기</h2>
         <h2><label for="title" class = "label label-default">제목</label></h2>
@@ -31,8 +31,11 @@
         <h2><label for="author" class = "label label-default">작성자</label></h2>
         <label th:text="*{author}" id="author" class="form-control"></label>
         <br>
+        <h2><label for="img" class = "label label-default">이미지 첨부</label></h2>
+        <input type="file" id = "img" name="img" class="file-path validate">
+        <br>
         <button class="btn btn-primary" type="submit">글 등록하기</button>
-        <button class="btn btn-danger" onclick = "location.href='/'">돌아가기</button>
+        <a class="btn btn-danger" href = "/board/lists">돌아가기</a>
     </form>
 
 </div> <!-- /container -->

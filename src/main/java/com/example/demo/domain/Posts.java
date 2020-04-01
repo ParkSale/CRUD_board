@@ -19,4 +19,6 @@ public class Posts {
     private String content;
 
     private String author;
+    private String fileName;
+    private String realFileName;
 }

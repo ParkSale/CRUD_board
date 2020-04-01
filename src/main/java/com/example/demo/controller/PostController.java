@@ -4,14 +4,19 @@ import com.example.demo.domain.Posts;
 import com.example.demo.domain.UserInfo;
 import com.example.demo.service.PostsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -33,11 +38,18 @@ public class PostController {
         return "board/newPost";
     }
     @PostMapping("/posts/new")
-    public String registerPost(PostForm postForm){
+    public String registerPost(@RequestParam("img") MultipartFile multipartFile, PostForm postForm) throws IOException {
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
         post.setAuthor(userInfo.getUserName());
         post.setContent(postForm.getContent());
+        if(!multipartFile.isEmpty()){
+            postsService.fileUpload(post, multipartFile);
+        }
+        else{
+            post.setRealFileName("");
+            post.setFileName("");
+        }
         postsService.save(post);
         return "redirect:/board/lists";
     }
