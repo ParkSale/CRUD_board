@@ -5,6 +5,8 @@ import com.example.demo.domain.UserInfo;
 import com.example.demo.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,7 @@ public class PostController {
 
     @GetMapping("/board/lists")
     public String showBoard(Model model){
-        List<Posts> board =postsService.findAll();
+        List<Posts> board = postsService.findAll();
         model.addAttribute("posts",board);
         return "board/lists";
     }
@@ -70,6 +72,8 @@ public class PostController {
         postForm.setAuthor(post.getAuthor());
         postForm.setContent(post.getContent());
         postForm.setTitle(post.getTitle());
+        postForm.setFileName(post.getFileName());
+        postForm.setRealFileName(post.getRealFileName());
         model.addAttribute("post",postForm);
         return "board/edit";
     }
