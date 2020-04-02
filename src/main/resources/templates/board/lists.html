@@ -27,6 +27,11 @@
         </tr>
         </tbody>
     </table>
+    <div id = "paginationBox">
+        <a th:if="${pagination.prev}" th:href = "@{/board/lists/{num} (num = ${pagination.getPage() - 1})}" class = "btn btn-primary">prev</a>
+        <button class = "btn btn-primary">현재페이지</button>
+        <a th:if="${pagination.next}" th:href = "@{/board/lists/{num} (num = ${pagination.getPage() + 1})}" class = "btn btn-primary">next</a>
+    </div>
     <a class ="btn btn-primary pull-right" href = "/board/newPost">글쓰기</a>
 </div>
 </body>

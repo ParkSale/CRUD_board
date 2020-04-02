@@ -28,7 +28,7 @@
         <br>
         <button class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" type = "submit">수정하기</button>
         <a class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" th:href = "@{/posts/{id}/del (id=${post.id})}">삭제하기</a>
-        <a class="btn btn-danger" href = "/board/lists">돌아가기</a>
+        <a class="btn btn-danger" href = "javascript:history.back()">돌아가기</a>
     </form>
 
 </div> <!-- /container -->

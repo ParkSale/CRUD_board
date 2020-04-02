@@ -19,7 +19,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model){
         if(userInfo.getUserName() != ""){
-            return "redirect:board/lists";
+            return "redirect:board/lists/1";
         }
         model.addAttribute("userForm",new UserForm());
         model.addAttribute("state","");
@@ -36,7 +36,7 @@ public class HomeController {
         if(users.getPassword().equals(userform.getPassword())){
             userInfo.setUserEmail(users.getEmail());
             userInfo.setUserName(users.getName());
-            return "redirect:/board/lists";
+            return "redirect:/board/lists/1";
         }
         model.addAttribute("state", "fail");
         return "home";

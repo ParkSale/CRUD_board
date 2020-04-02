@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-import com.example.demo.controller.PostForm;
 import com.example.demo.domain.Posts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -27,5 +26,8 @@ public class PostsRepository {
 
     public void delete(Long postId) {
         em.remove(em.find(Posts.class,postId));
+    }
+    public int getTotalCnt(){
+        return em.createQuery("SELECT count(p) from Posts p",Integer.class).getSingleResult();
     }
 }
