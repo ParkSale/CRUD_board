@@ -27,7 +27,18 @@ public class PostsRepository {
     public void delete(Long postId) {
         em.remove(em.find(Posts.class,postId));
     }
-    public int getTotalCnt(){
-        return em.createQuery("SELECT count(p) from Posts p",Integer.class).getSingleResult();
+
+    public List<Posts> findByTitle(String str) {
+        return em.createQuery("SELECT p from Posts p WHERE p.title = :title ORDER BY p.id DESC", Posts.class).setParameter("title",str)
+                .getResultList();
+    }
+    public List<Posts> findByContent(String str){
+        str = "%"+str + "%";
+        return em.createQuery("SELECT p FROM Posts p WHERE p.content LIKE :content ORDER BY p.id DESC",Posts.class).setParameter("content",str)
+                .getResultList();
+    }
+    public List<Posts> findByAuthor(String str){
+        return em.createQuery("SELECT p from Posts p WHERE p.author = :author ORDER BY p.id DESC", Posts.class).setParameter("author",str)
+                .getResultList();
     }
 }

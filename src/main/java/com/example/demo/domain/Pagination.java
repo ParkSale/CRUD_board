@@ -22,7 +22,7 @@ public class Pagination {
         }
         else{
             prev = true;
-            if((totalSize - 1) / listSize == page){
+            if(page * listSize >= totalSize){
                 next = false;
             }
             else next = true;

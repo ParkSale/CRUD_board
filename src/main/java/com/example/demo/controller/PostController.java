@@ -6,8 +6,6 @@ import com.example.demo.domain.UserInfo;
 import com.example.demo.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,5 +100,46 @@ public class PostController {
     public String delPost(@PathVariable("postId") Long postId){
         postsService.delete(postId);
         return "redirect:/board/lists/1";
+    }
+
+    @GetMapping("/posts/search")
+    public String search(@RequestParam("type") String type, @RequestParam("str") String str){
+        String ret = "/posts/search/1?type=" + type +"&str=" + str;
+        return "redirect:" + ret;
+    }
+
+    @GetMapping("posts/search/{page}")
+    public String search(@RequestParam("type") String type, @RequestParam("str") String str,
+                         @PathVariable("page") int page, Model model){
+        if(type.equals("title")){
+            List<Posts> boardAll = postsService.findByTitle(str);
+            int totalCnt = boardAll.size();
+            Pagination pagination = postsService.setPagination(page,totalCnt);
+            int size = pagination.getListSize();
+            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            model.addAttribute("pagination",pagination);
+            model.addAttribute("posts",board);
+            return "board/search";
+        }
+        else if(type.equals("content")){
+            List<Posts> boardAll = postsService.findByContent(str);
+            int totalCnt = boardAll.size();
+            Pagination pagination = postsService.setPagination(page,totalCnt);
+            int size = pagination.getListSize();
+            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            model.addAttribute("pagination",pagination);
+            model.addAttribute("posts",board);
+            return "board/search";
+        }
+        else{
+            List<Posts> boardAll = postsService.findByAuthor(str);
+            int totalCnt = boardAll.size();
+            Pagination pagination = postsService.setPagination(page,totalCnt);
+            int size = pagination.getListSize();
+            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            model.addAttribute("pagination",pagination);
+            model.addAttribute("posts",board);
+            return "board/search";
+        }
     }
 }
