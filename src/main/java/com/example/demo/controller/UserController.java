@@ -4,11 +4,13 @@ import com.example.demo.domain.UserInfo;
 import com.example.demo.domain.Users;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -37,7 +39,7 @@ public class UserController {
         else return "user/new";
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(){
         userInfo.setUserName("");
         userInfo.setUserEmail("");

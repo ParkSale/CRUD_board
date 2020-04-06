@@ -5,6 +5,8 @@ import com.example.demo.domain.Users;
 import com.example.demo.repository.UsersRepository;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     private final UserInfo userInfo;
     private final UsersService usersService;
+    private final PasswordEncoder passwordEncoder;
     @GetMapping("/")
     public String home(Model model){
         if(userInfo.getUserName() != ""){
@@ -28,17 +31,15 @@ public class HomeController {
 
     @PostMapping("/login")
     public String loginCheck(UserForm userform,Model model){
-        Users users = usersService.findByEmail(userform.getEmail());
-        if(users == null){
+        Users user = usersService.checkUser(userform);
+        if(user == null){
             model.addAttribute("state","fail");
             return "home";
         }
-        if(users.getPassword().equals(userform.getPassword())){
-            userInfo.setUserEmail(users.getEmail());
-            userInfo.setUserName(users.getName());
+        else {
+            userInfo.setUserEmail(user.getEmail());
+            userInfo.setUserName(user.getName());
             return "redirect:/board/lists/1";
         }
-        model.addAttribute("state", "fail");
-        return "home";
     }
 }

@@ -11,17 +11,17 @@
 
 <div class="container">
 
-    <form class="form-signing" action="/users/new" th:object="${userForm}" method = "post">
+    <form class="form-signing" action="/users/new" th:object="${userForm}" th:method = "post">
         <h2 class="form-signing-heading">회원가입</h2>
         <label for="inputEmail" class="sr-only">이메일</label>
-        <input type="email" th:field="*{email}" id="inputEmail" class="form-control" placeholder="이메일을 입력해주세요" required autofocus>
+        <input type="email" th:field="*{email}" id="inputEmail" class="form-control" name = "email" placeholder="이메일을 입력해주세요" required autofocus>
         <label class = "alert alert-danger" th:if="${email.toString().equals('fail')}">중복된 이메일입니다.</label>
         <br>
         <label for="inputPassword" class="sr-only">비밀번호</label>
-        <input type="password" th:field="*{password}"id="inputPassword" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+        <input type="password" th:field="*{password}"id="inputPassword" class="form-control" name = "password" placeholder="비밀번호를 입력해주세요" required>
         <br>
         <label for="inputName" class="sr-only">이름</label>
-        <input type="text" th:field="*{name}"id="inputName" class="form-control" placeholder="이름을 입력해주세요" required>
+        <input type="text" th:field="*{name}"id="inputName" class="form-control" placeholder="이름을 입력해주세요" name = "name" required>
         <label class = "alert alert-danger" th:if="${name.toString().equals('fail')}">중복된 이름입니다.</label>
         <br>
         <button class="btn btn-primary" type="submit">가입하기</button>

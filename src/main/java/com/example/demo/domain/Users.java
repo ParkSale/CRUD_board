@@ -1,8 +1,8 @@
 package com.example.demo.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 
@@ -18,4 +18,6 @@ public class Users {
     private String password;
     @Column(nullable = false)
     private String name;
+    private String authority;
+
 }

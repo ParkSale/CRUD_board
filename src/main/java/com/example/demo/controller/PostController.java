@@ -43,6 +43,9 @@ public class PostController {
 
     @GetMapping("/board/newPost")
     public String newPost(Model model){
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         PostForm postForm = new PostForm();
         postForm.setAuthor(userInfo.getUserName());
         model.addAttribute("postForm", postForm);
@@ -50,6 +53,9 @@ public class PostController {
     }
     @PostMapping("/posts/new")
     public String registerPost(@RequestParam("img") MultipartFile multipartFile, PostForm postForm) throws IOException {
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
         post.setAuthor(userInfo.getUserName());
@@ -67,6 +73,9 @@ public class PostController {
 
     @GetMapping("/posts/{postId}/read")
     public String readPost(@PathVariable("postId") Long postId, Model model){
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         Posts post = postsService.findOne(postId);
         model.addAttribute("post",post);
         model.addAttribute("userName",userInfo.getUserName());
@@ -75,6 +84,9 @@ public class PostController {
 
     @GetMapping("/posts/{postId}/edit")
     public String editPost(@PathVariable("postId") Long postId, Model model){
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         Posts post = postsService.findOne(postId);
         PostForm postForm = new PostForm();
         postForm.setId(post.getId());
@@ -89,6 +101,9 @@ public class PostController {
 
     @PostMapping("/posts/{postId}/edit")
     public String editPost(@PathVariable("postId") Long postId, PostForm postForm){
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         Posts post = postsService.findOne(postId);
         post.setTitle(postForm.getTitle());
         post.setContent(postForm.getContent());
@@ -98,14 +113,11 @@ public class PostController {
 
     @GetMapping("/posts/{postId}/del")
     public String delPost(@PathVariable("postId") Long postId){
+        if(userInfo.getUserName() == ""){
+            return "redirect:/";
+        }
         postsService.delete(postId);
         return "redirect:/board/lists/1";
-    }
-
-    @GetMapping("/posts/search")
-    public String search(@RequestParam("type") String type, @RequestParam("str") String str){
-        String ret = "/posts/search/1?type=" + type +"&str=" + str;
-        return "redirect:" + ret;
     }
 
     @GetMapping("posts/search/{page}")
