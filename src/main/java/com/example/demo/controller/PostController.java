@@ -100,13 +100,20 @@ public class PostController {
     }
 
     @PostMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, PostForm postForm){
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, @RequestParam("img") MultipartFile multipartFile) throws IOException {
         if(userInfo.getUserName() == ""){
             return "redirect:/";
         }
         Posts post = postsService.findOne(postId);
         post.setTitle(postForm.getTitle());
         post.setContent(postForm.getContent());
+        if(!multipartFile.isEmpty()){
+            postsService.fileUpload(post, multipartFile);
+        }
+        else{
+            post.setRealFileName("");
+            post.setFileName("");
+        }
         postsService.save(post);
         return "redirect:/board/lists/1";
     }
