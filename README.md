@@ -11,4 +11,3 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 Session을 Redis써서 관리
 
 배포
-링크 : http://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080
