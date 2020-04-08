@@ -10,5 +10,5 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 세션에 에러가 있는 것 같음 -> 알아볼 것
 
-배포 : http://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080
+배포 : http://세일.웹.한국
 
