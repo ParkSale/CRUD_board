@@ -23,3 +23,14 @@ logging:
  level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
+
+cloud:
+ aws:
+  s3:
+   bucket: crudboardimage
+  region:
+   static: ap-northeast-2
+  stack:
+   auto: false
+  credentials:
+   instanceProfile: true

@@ -39,7 +39,7 @@ public class UserController {
         else return "user/new";
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(){
         userInfo.setUserName("");
         userInfo.setUserEmail("");

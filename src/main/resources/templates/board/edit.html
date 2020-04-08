@@ -18,10 +18,9 @@
         <br>
         <h2><label for="content" class = "label label-default">내용</label></h2>
         <textarea th:field="*{content}"id="content" class="form-control" placeholder="내용을 입력해주세요" required></textarea>
-        <h2><label for = "img" th:if="*{!fileName.isEmpty()}" class = "label label-default">이미지</label></h2>
-        <input type="file" id = "img" name="img" class="file-path validate" accept = "image/*" onchange="fileChk(this)"/>
+        <h2><label th:if="*{!fileName.isEmpty()}" class = "label label-default">이미지</label></h2>
         <label th:if="*{!fileName.isEmpty()}">
-            <img th:src = "@{/images/{name}/ (name = *{realFileName})}" id = "imagePreview" width="300" height="200"/>
+            <img th:src = "*{fileName}" width="300" height="200"/>
             <br>
         </label>
         <h2><label for="author" class = "label label-default">작성자</label></h2>
@@ -37,23 +36,4 @@
 </body>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<script type = "text/javascript">
-    function fileChk(input) {
-        path = input.value.lastIndexOf('.');
-        filePoint = input.value.substring(path+1,input.length);
-        type = filePoint.toLowerCase();
-        if(!(type == 'jpg' || type == 'gif' || type == 'png' || type == 'jpeg')){
-            alert("jpg, gif, png, jpeg중 하나를 업로드해주세요!");
-            e.value = '';
-        }
-        else{
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#imagePreview').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-
-    }
-</script>
 </html>

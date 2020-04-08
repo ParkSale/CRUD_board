@@ -20,5 +20,4 @@ public class Posts {
 
     private String author;
     private String fileName;
-    private String realFileName;
 }

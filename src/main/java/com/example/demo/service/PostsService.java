@@ -42,11 +42,11 @@ public class PostsService {
         String imgUploadPath = "C:\\Users\\세일\\IdeaProjects\\demo\\src\\main\\resources\\static\\images\\";
         String fileName = multipartFile.getOriginalFilename();
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-        String realFileName = System.currentTimeMillis() + fileExtension;
-        File target = new File(imgUploadPath,realFileName);
+        String imgUrl = System.currentTimeMillis() + fileExtension;
+        File target = new File(imgUploadPath,imgUrl);
         multipartFile.transferTo(target);
-        post.setFileName(fileName);
-        post.setRealFileName(realFileName);
+        System.out.println(imgUrl);
+        post.setFileName(imgUrl);
     }
 
     @Transactional(readOnly = true)

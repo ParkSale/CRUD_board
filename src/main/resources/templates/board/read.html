@@ -20,7 +20,7 @@
         <label th:text="*{content}" id="content" class="form-control"></label>
         <h2><label for = "img" th:if="*{!fileName.isEmpty()}" class = "label label-default">이미지</label></h2>
         <label th:if="*{!fileName.isEmpty()}" id = "img">
-            <img th:src = "@{/images/{name}/ (name = *{realFileName})}" width="300" height="200"/>
+            <img th:src = "*{fileName}" width="300" height="200"/>
             <br>
         </label>
         <h2><label for="author" class = "label label-default">작성자</label></h2>

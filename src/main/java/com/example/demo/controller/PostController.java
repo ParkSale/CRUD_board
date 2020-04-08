@@ -4,6 +4,7 @@ import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
 import com.example.demo.domain.UserInfo;
 import com.example.demo.service.PostsService;
+import com.example.demo.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PostController {
     private final UserInfo userInfo;
     private final PostsService postsService;
+    private final S3Service s3Service;
 
     @GetMapping("/board/lists/{page}")
     public String showBoard(Model model, @PathVariable("page") int page){
@@ -61,10 +63,10 @@ public class PostController {
         post.setAuthor(userInfo.getUserName());
         post.setContent(postForm.getContent());
         if(!multipartFile.isEmpty()){
-            postsService.fileUpload(post, multipartFile);
+            String fileName = s3Service.upload(multipartFile);
+            post.setFileName(fileName);
         }
         else{
-            post.setRealFileName("");
             post.setFileName("");
         }
         postsService.save(post);
@@ -94,26 +96,18 @@ public class PostController {
         postForm.setContent(post.getContent());
         postForm.setTitle(post.getTitle());
         postForm.setFileName(post.getFileName());
-        postForm.setRealFileName(post.getRealFileName());
         model.addAttribute("post",postForm);
         return "board/edit";
     }
 
     @PostMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, @RequestParam("img") MultipartFile multipartFile) throws IOException {
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm)  {
         if(userInfo.getUserName() == ""){
             return "redirect:/";
         }
         Posts post = postsService.findOne(postId);
         post.setTitle(postForm.getTitle());
         post.setContent(postForm.getContent());
-        if(!multipartFile.isEmpty()){
-            postsService.fileUpload(post, multipartFile);
-        }
-        else{
-            post.setRealFileName("");
-            post.setFileName("");
-        }
         postsService.save(post);
         return "redirect:/board/lists/1";
     }

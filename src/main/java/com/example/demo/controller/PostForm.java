@@ -12,6 +12,5 @@ public class PostForm {
     private String title;
     private String content;
     private String author;
-    private String realFileName;
     private String fileName;
 }
