@@ -10,6 +10,6 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 Session을 Redis써서 관리
 
-배포 : https://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080
+배포 : http://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080
 
 배포는 했으나 로컬과는 다르게 자잘한 오류가 너무 많다,,
