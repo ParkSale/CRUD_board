@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Service
-@NoArgsConstructor
 public class S3Service {
     private AmazonS3 s3Client;
 
@@ -27,11 +26,9 @@ public class S3Service {
     @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private String bucket = "crudboardimage";
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
+    private String region = "ap-northeast-2";
 
     @PostConstruct
     public void setS3Client() {
