@@ -82,12 +82,14 @@ public class PostController {
     public String readPost(@PathVariable("postId") Long postId, Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
         Posts post = postsService.findOne(postId);
         model.addAttribute("post",post);
-        model.addAttribute("userName",user.getName());
+        if(user == null){
+            model.addAttribute("userName","");
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+        }
         return "board/read";
     }
 
