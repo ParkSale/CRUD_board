@@ -8,7 +8,7 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 앞으로 진행예정사항
 
-세션에 에러가 있는 것 같음 -> 알아볼 것
+조회수 and 댓글
 
 배포 : http://세일.웹.한국
 
