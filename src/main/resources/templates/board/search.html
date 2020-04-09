@@ -8,7 +8,7 @@
 
 <body>
 <div class = "container">
-    <a class="btn btn-warning pull-right" href = "/logout">로그아웃</a>
+    <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
     <br><br>
     <a class = "btn btn-primary pull-right" href = "/board/lists/1">전체목록보기</a>
     <table class = "table table-striped">
@@ -49,6 +49,11 @@
         param = document.location.href.split('?')[1];
         page = parseInt(document.location.href.split('/')[5]) - 1;
         location.replace("/posts/search/" + page + '?' + param);
+    }
+    function logout(){
+        if(window.confirm("로그아웃 하시겠습니까??")){
+            window.location.href="/logout";
+        }
     }
 </script>
 </html>

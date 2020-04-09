@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.UserInfo;
-import com.example.demo.domain.Users;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class UserController {
-    private final UserInfo userInfo;
     private final UsersService usersService;
 
     @GetMapping("/users/new")
@@ -29,6 +27,8 @@ public class UserController {
     public String registerUser(UserForm userForm, Model model){
         String ret = usersService.join(userForm);
         model.addAttribute("userForm",userForm);
+        model.addAttribute("email","");
+        model.addAttribute("name","");
         if(ret.equals("email")){
             model.addAttribute("email","fail");
         }
@@ -37,12 +37,5 @@ public class UserController {
         }
         if(ret.equals("success")) return "redirect:/";
         else return "user/new";
-    }
-
-    @GetMapping("/logout")
-    public String logout(){
-        userInfo.setUserName("");
-        userInfo.setUserEmail("");
-        return "redirect:/";
     }
 }

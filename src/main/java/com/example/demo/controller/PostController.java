@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
-import com.example.demo.domain.UserInfo;
+import com.example.demo.domain.Users;
 import com.example.demo.service.PostsService;
 import com.example.demo.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class PostController {
-    private final UserInfo userInfo;
     private final PostsService postsService;
     private final S3Service s3Service;
 
@@ -44,23 +45,27 @@ public class PostController {
     }
 
     @GetMapping("/board/newPost")
-    public String newPost(Model model){
-        if(userInfo.getUserName() == ""){
+    public String newPost(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         PostForm postForm = new PostForm();
-        postForm.setAuthor(userInfo.getUserName());
+        postForm.setAuthor(user.getName());
         model.addAttribute("postForm", postForm);
         return "board/newPost";
     }
     @PostMapping("/posts/new")
-    public String registerPost(@RequestParam("img") MultipartFile multipartFile, PostForm postForm) throws IOException {
-        if(userInfo.getUserName() == ""){
+    public String registerPost(@RequestParam("img") MultipartFile multipartFile, PostForm postForm, HttpServletRequest request) throws IOException {
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
-        post.setAuthor(userInfo.getUserName());
+        post.setAuthor(user.getName());
         post.setContent(postForm.getContent());
         if(!multipartFile.isEmpty()){
             String fileName = s3Service.upload(multipartFile);
@@ -74,19 +79,23 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}/read")
-    public String readPost(@PathVariable("postId") Long postId, Model model){
-        if(userInfo.getUserName() == ""){
+    public String readPost(@PathVariable("postId") Long postId, Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         Posts post = postsService.findOne(postId);
         model.addAttribute("post",post);
-        model.addAttribute("userName",userInfo.getUserName());
+        model.addAttribute("userName",user.getName());
         return "board/read";
     }
 
     @GetMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, Model model){
-        if(userInfo.getUserName() == ""){
+    public String editPost(@PathVariable("postId") Long postId, Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         Posts post = postsService.findOne(postId);
@@ -101,8 +110,10 @@ public class PostController {
     }
 
     @PostMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, PostForm postForm)  {
-        if(userInfo.getUserName() == ""){
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, HttpServletRequest request)  {
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         Posts post = postsService.findOne(postId);
@@ -113,8 +124,10 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}/del")
-    public String delPost(@PathVariable("postId") Long postId){
-        if(userInfo.getUserName() == ""){
+    public String delPost(@PathVariable("postId") Long postId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+        if(user == null){
             return "redirect:/";
         }
         postsService.delete(postId);

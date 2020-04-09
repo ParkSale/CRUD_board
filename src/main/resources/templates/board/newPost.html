@@ -13,7 +13,7 @@
 <div class="container">
 
     <form class="form-signing" action="/posts/new" th:object="${postForm}" method = "post" enctype="multipart/form-data">
-        <a class="btn btn-warning pull-right" href = "/logout">로그아웃</a>
+        <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
         <h2 class="form-signing-heading">새로운 글 쓰기</h2>
         <h2><label for="title" class = "label label-default">제목</label></h2>
         <input type="text" th:field="*{title}" id="title" class="form-control" placeholder="제목을 입력해주세요" required autofocus>
@@ -58,6 +58,11 @@
             console.log(input.files[0]);
         }
 
+    }
+    function logout(){
+        if(window.confirm("로그아웃 하시겠습니까??")){
+            window.location.href="/logout";
+        }
     }
 </script>
 </html>

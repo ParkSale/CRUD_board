@@ -18,6 +18,5 @@ public class Users {
     private String password;
     @Column(nullable = false)
     private String name;
-    private String authority;
 
 }

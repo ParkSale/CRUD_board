@@ -11,7 +11,7 @@
 <div class="container">
 
     <form class="form-signing" th:object="${post}"th:action= "@{/posts/{id}/edit (id = ${post.id})}" method = "post" enctype="multipart/form-data">
-        <a class="btn btn-warning pull-right" href = "/logout">로그아웃</a>
+        <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
         <br><br>
         <h2><label for="title" class = "label label-default">제목</label></h2>
         <input type="text" th:field="*{title}" id="title" class="form-control" placeholder="제목을 입력해주세요" required autofocus>
@@ -36,4 +36,11 @@
 </body>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script>
+    function logout(){
+        if(window.confirm("로그아웃 하시겠습니까??")){
+            window.location.href="/logout";
+        }
+    }
+</script>
 </html>

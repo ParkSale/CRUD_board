@@ -8,7 +8,7 @@
 
 <body>
 <div class = "container">
-    <a class="btn btn-warning pull-right" href = "/logout">로그아웃</a>
+    <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
     <br><br>
     <form method = "get" action = /posts/search/1>
         <button class="btn-group-sm btn-primary pull-right" type="submit" style = "height : 27px; margin : 3px">검색</button>
@@ -47,4 +47,11 @@
 </body>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script>
+    function logout(){
+        if(window.confirm("로그아웃 하시겠습니까??")){
+            window.location.href="/logout";
+        }
+    }
+</script>
 </html>

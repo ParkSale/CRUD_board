@@ -19,7 +19,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()		//post방식이 안받아짐 없으면
-                .formLogin().disable();	//기본 로그인 페이지 없애기
+                .formLogin().disable()	//기본 로그인 페이지 없애기
+                .logout() .logoutUrl("/logout") .logoutSuccessUrl("/");
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
