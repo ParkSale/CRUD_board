@@ -11,7 +11,8 @@
 <div class="container">
 
     <form class="form-signing" th:object="${post}"th:action= "@{/posts/{id}/edit (id = ${post.id})}" method = "get">
-        <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
+        <a class="btn btn-warning pull-right" th:if=${session.isEmpty()} href = "/home">로그인</a>
+        <a class="btn btn-warning pull-right" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
         <br><br>
         <h2><label for="title" class = "label label-default">제목</label></h2>
         <label th:text="*{title}" id="title" class="form-control"></label>

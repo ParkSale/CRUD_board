@@ -8,7 +8,8 @@
 
 <body>
 <div class = "container">
-    <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
+    <a class="btn btn-warning pull-right" th:if=${session.isEmpty()} href = "/home">로그인</a>
+    <a class="btn btn-warning pull-right" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
     <br><br>
     <a class = "btn btn-primary pull-right" href = "/board/lists/1">전체목록보기</a>
     <table class = "table table-striped">

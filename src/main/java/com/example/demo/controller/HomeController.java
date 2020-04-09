@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.domain.Users;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +16,15 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
     private final UsersService usersService;
     @GetMapping("/")
+    public String board(){
+        return "redirect:/board/lists/1";
+    }
+    @GetMapping("/home")
     public String home(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
         Users user= (Users) session.getAttribute("user");
         if(user != null){
-            return "redirect:board/lists/1";
+            return "redirect:/board/lists/1";
         }
         model.addAttribute("userForm",new UserForm());
         model.addAttribute("state","");

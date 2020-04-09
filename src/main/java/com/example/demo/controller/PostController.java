@@ -49,7 +49,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         PostForm postForm = new PostForm();
         postForm.setAuthor(user.getName());
@@ -61,7 +61,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
@@ -83,7 +83,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         Posts post = postsService.findOne(postId);
         model.addAttribute("post",post);
@@ -96,7 +96,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         Posts post = postsService.findOne(postId);
         PostForm postForm = new PostForm();
@@ -114,7 +114,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         Posts post = postsService.findOne(postId);
         post.setTitle(postForm.getTitle());
@@ -128,7 +128,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
-            return "redirect:/";
+            return "redirect:/home";
         }
         postsService.delete(postId);
         return "redirect:/board/lists/1";

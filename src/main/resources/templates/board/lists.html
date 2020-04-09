@@ -8,7 +8,8 @@
 
 <body>
 <div class = "container">
-    <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
+    <a class="btn btn-warning pull-right" th:if=${session.isEmpty()} href = "/home">로그인</a>
+    <a class="btn btn-warning pull-right" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
     <br><br>
     <form method = "get" action = /posts/search/1>
         <button class="btn-group-sm btn-primary pull-right" type="submit" style = "height : 27px; margin : 3px">검색</button>
