@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,8 @@ public class PostController {
         post.setTitle(postForm.getTitle());
         post.setAuthor(user.getName());
         post.setContent(postForm.getContent());
+        post.setViewCnt((long) 0);
+        post.setPostTime(LocalDateTime.now());
         if(!multipartFile.isEmpty()){
             String fileName = s3Service.upload(multipartFile);
             post.setFileName(fileName);
@@ -83,6 +86,7 @@ public class PostController {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         Posts post = postsService.findOne(postId);
+        postsService.readPost(post);
         model.addAttribute("post",post);
         if(user == null){
             model.addAttribute("userName","");

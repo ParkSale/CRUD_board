@@ -35,7 +35,7 @@ public class UserController {
         if(ret.equals("name")){
             model.addAttribute("name","fail");
         }
-        if(ret.equals("success")) return "redirect:/";
+        if(ret.equals("success")) return "redirect:/home";
         else return "user/new";
     }
 }

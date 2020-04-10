@@ -18,6 +18,8 @@
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
+            <th>조회수</th>
+            <th>작성시간</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +29,8 @@
                 <a th:text="${post.title}" th:href = "@{/posts/{id}/read (id = ${post.id})}"></a>
             </td>
             <td th:text="${post.author}"></td>
+            <td th:text="${post.viewCnt}"></td>
+            <td th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         </tr>
         </tbody>
     </table>

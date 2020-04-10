@@ -63,5 +63,10 @@ public class PostsService {
         pagination.pageInfo(page, totalCnt);
         return pagination;
     }
+
+    @Transactional
+    public void readPost(Posts post) {
+        post.setViewCnt(post.getViewCnt() + 1);
+    }
 }
 
