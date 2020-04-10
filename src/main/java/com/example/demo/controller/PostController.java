@@ -38,7 +38,12 @@ public class PostController {
         pagination.pageInfo(page, totalCnt);
         int size = pagination.getListSize();
         for(int i = (page - 1)*size; i < Math.min(totalCnt,(page - 1)*size + size);++i){
-            board.add(boardAll.get(i));
+            if(boardAll.get(i).getTitle().length() > 10){
+                Posts tmp = boardAll.get(i);
+                tmp.setTitle(tmp.getTitle().substring(0,9) + "...");
+                board.add(tmp);
+            }
+            else board.add(boardAll.get(i));
         }
         model.addAttribute("pagination",pagination);
         model.addAttribute("posts",board);
