@@ -1,16 +1,10 @@
 package com.example.demo.service;
-
-import com.example.demo.domain.Comments;
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
 import com.example.demo.repository.PostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

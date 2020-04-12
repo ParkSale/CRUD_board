@@ -4,7 +4,6 @@ import com.example.demo.domain.Comments;
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
 import com.example.demo.domain.Users;
-import com.example.demo.service.CommentsService;
 import com.example.demo.service.PostsService;
 import com.example.demo.service.S3Service;
 import com.example.demo.service.UsersService;

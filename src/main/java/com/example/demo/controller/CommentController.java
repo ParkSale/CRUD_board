@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Users;
 import com.example.demo.service.CommentsService;
-import com.example.demo.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
