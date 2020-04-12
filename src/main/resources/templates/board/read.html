@@ -32,6 +32,7 @@
     </form>
 
     <table class = "table table-striped">
+        <h2><label class = "label label-default">댓글</label></h2>
         <thead>
         <tr>
             <th>작성자</th>
@@ -47,7 +48,7 @@
         </tr>
         </tbody>
     </table>
-    <form class="form-signing" th:object="${commentForm}" th:action = "@{/comments/{id}/new (id = ${post.id})}" method = "post">
+    <form class="form-signing" th:if=${!session.isEmpty()} th:object="${commentForm}" th:action = "@{/comments/{id}/new (id = ${post.id})}" method = "post">
         <h2><label for="comment" class = "label label-default">댓글입력</label></h2>
         <textarea id="comment" th:field="*{comment}" class="form-control" placeholder="내용을 입력해주세요" required></textarea>
         <br>
