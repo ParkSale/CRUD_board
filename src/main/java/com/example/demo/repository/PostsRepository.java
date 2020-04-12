@@ -30,7 +30,7 @@ public class PostsRepository {
 
     public List<Posts> findByTitle(String str) {
         str = "%" + str + "%";
-        return em.createQuery("SELECT p from Posts p WHERE p.title = :title ORDER BY p.id DESC", Posts.class).setParameter("title",str)
+        return em.createQuery("SELECT p from Posts p WHERE p.title LIKE :title ORDER BY p.id DESC", Posts.class).setParameter("title",str)
                 .getResultList();
     }
     public List<Posts> findByContent(String str){
