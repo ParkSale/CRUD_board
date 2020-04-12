@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Comments;
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
 import com.example.demo.domain.Users;
+import com.example.demo.service.CommentsService;
 import com.example.demo.service.PostsService;
 import com.example.demo.service.S3Service;
+import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +32,7 @@ import java.util.List;
 public class PostController {
     private final PostsService postsService;
     private final S3Service s3Service;
-
+    private final UsersService usersService;
     @GetMapping("/board/lists/{page}")
     public String showBoard(Model model, @PathVariable("page") int page){
         List<Posts> boardAll = postsService.findAll();
@@ -58,7 +62,7 @@ public class PostController {
             return "redirect:/home";
         }
         PostForm postForm = new PostForm();
-        postForm.setAuthor(user.getName());
+        postForm.setUser(user);
         model.addAttribute("postForm", postForm);
         return "board/newPost";
     }
@@ -71,7 +75,7 @@ public class PostController {
         }
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
-        post.setAuthor(user.getName());
+        post.setUser(user);
         post.setContent(postForm.getContent());
         post.setViewCnt((long) 0);
         post.setPostTime(LocalDateTime.now());
@@ -93,6 +97,9 @@ public class PostController {
         Posts post = postsService.findOne(postId);
         postsService.readPost(post);
         model.addAttribute("post",post);
+        model.addAttribute("commentForm",new CommentForm());
+        List<Comments> list = post.getComments();
+        model.addAttribute("comments",list);
         if(user == null){
             model.addAttribute("userName","");
         }
@@ -112,7 +119,7 @@ public class PostController {
         Posts post = postsService.findOne(postId);
         PostForm postForm = new PostForm();
         postForm.setId(post.getId());
-        postForm.setAuthor(post.getAuthor());
+        postForm.setUser(user);
         postForm.setContent(post.getContent());
         postForm.setTitle(post.getTitle());
         postForm.setFileName(post.getFileName());
@@ -121,7 +128,7 @@ public class PostController {
     }
 
     @PostMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, HttpServletRequest request)  {
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, HttpServletRequest request) {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("user");
         if(user == null){
@@ -169,7 +176,9 @@ public class PostController {
             return "board/search";
         }
         else{
-            List<Posts> boardAll = postsService.findByAuthor(str);
+            Users user = usersService.findByName(str);
+            List<Posts> boardAll = user.getPosts();
+            Collections.reverse(boardAll);
             int totalCnt = boardAll.size();
             Pagination pagination = postsService.setPagination(page,totalCnt);
             int size = pagination.getListSize();

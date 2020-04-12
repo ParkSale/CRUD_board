@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 @Entity
@@ -13,14 +15,21 @@ import java.time.LocalDateTime;
 public class Posts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long id;
     @Column(nullable = false)
     private String title;
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private Users user;
+
     private String fileName;
     private Long viewCnt;
     private LocalDateTime postTime;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comments> comments = new ArrayList<>();
 }

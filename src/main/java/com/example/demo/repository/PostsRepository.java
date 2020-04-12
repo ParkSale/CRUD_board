@@ -37,8 +37,4 @@ public class PostsRepository {
         return em.createQuery("SELECT p FROM Posts p WHERE p.content LIKE :content ORDER BY p.id DESC",Posts.class).setParameter("content",str)
                 .getResultList();
     }
-    public List<Posts> findByAuthor(String str){
-        return em.createQuery("SELECT p from Posts p WHERE p.author = :author ORDER BY p.id DESC", Posts.class).setParameter("author",str)
-                .getResultList();
-    }
 }

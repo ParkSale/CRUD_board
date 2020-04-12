@@ -16,7 +16,6 @@
         <br><br>
         <h2><label for="title" class = "label label-default">제목</label></h2>
         <label th:text="*{title}" id="title" class="form-control"></label>
-        <br>
         <h2><label for="content" class = "label label-default">내용</label></h2>
         <label th:text="*{content}" id="content" class="form-control"></label>
         <h2><label for = "img" th:if="*{!fileName.isEmpty()}" class = "label label-default">이미지</label></h2>
@@ -25,13 +24,35 @@
             <br>
         </label>
         <h2><label for="author" class = "label label-default">작성자</label></h2>
-        <label th:text="*{author}" id="author" class="form-control"></label>
+        <label th:text="*{user.name}" id="author" class="form-control"></label>
         <br>
-        <button class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" type = "submit">수정하기</button>
-        <a class = "btn btn-info" th:if="${userName.toString().equals(post.getAuthor().toString())}" th:href = "@{/posts/{id}/del (id=${post.id})}">삭제하기</a>
-        <a class="btn btn-danger" href = "javascript:history.back()">돌아가기</a>
+        <button class = "btn btn-info" th:if="${userName.toString().equals(post.getUser().getName().toString())}" type = "submit">수정하기</button>
+        <a class = "btn btn-info" th:if="${userName.toString().equals(post.getUser().getName().toString())}" th:href = "@{/posts/{id}/del (id=${post.id})}">삭제하기</a>
+        <a class="btn btn-danger" href = "/board/lists/1">돌아가기</a>
     </form>
 
+    <table class = "table table-striped">
+        <thead>
+        <tr>
+            <th>작성자</th>
+            <th>내용</th>
+            <th>작성시간</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.author}"></td>
+            <td th:text="${comment.comment}"></td>
+            <td th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form class="form-signing" th:object="${commentForm}" th:action = "@{/comments/{id}/new (id = ${post.id})}" method = "post">
+        <h2><label for="comment" class = "label label-default">댓글입력</label></h2>
+        <textarea id="comment" th:field="*{comment}" class="form-control" placeholder="내용을 입력해주세요" required></textarea>
+        <br>
+        <button class = "btn btn-info" type = "submit">등록하기</button>
+    </form>
 </div> <!-- /container -->
 
 

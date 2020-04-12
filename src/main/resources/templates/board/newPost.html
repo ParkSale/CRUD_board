@@ -22,7 +22,7 @@
         <textarea th:field="*{content}"id="content" class="form-control" placeholder="내용을 입력해주세요" required></textarea>
         <br>
         <h2><label for="author" class = "label label-default">작성자</label></h2>
-        <label th:text="*{author}" id="author" class="form-control"></label>
+        <label th:text="*{user.name}" id="author" class="form-control"></label>
         <br>
         <h2><label for="img" class = "label label-default">이미지 첨부</label></h2>
         <input type="file" id = "img" name="img" class="file-path validate" accept = "image/*" onchange="fileChk(this)"/>

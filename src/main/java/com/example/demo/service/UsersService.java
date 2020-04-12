@@ -42,4 +42,9 @@ public class UsersService {
         }
         else return null;
     }
+
+    @Transactional(readOnly = true)
+    public Users findByName(String str) {
+        return usersRepository.findByName(str);
+    }
 }

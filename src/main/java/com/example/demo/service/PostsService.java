@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.Comments;
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
 import com.example.demo.repository.PostsRepository;
@@ -42,10 +43,7 @@ public class PostsService {
     public List<Posts> findByTitle(String str) {
         return postsRepository.findByTitle(str);
     }
-    @Transactional(readOnly = true)
-    public List<Posts> findByAuthor(String str) {
-        return postsRepository.findByAuthor(str);
-    }
+
     @Transactional(readOnly = true)
     public List<Posts> findByContent(String str) {
         return postsRepository.findByContent(str);
@@ -68,5 +66,6 @@ public class PostsService {
     public void readPost(Posts post) {
         post.setViewCnt(post.getViewCnt() + 1);
     }
+
 }
 

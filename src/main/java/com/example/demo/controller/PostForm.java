@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,6 @@ public class PostForm {
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private Users user;
     private String fileName;
 }

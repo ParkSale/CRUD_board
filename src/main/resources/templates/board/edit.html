@@ -25,7 +25,7 @@
             <br>
         </label>
         <h2><label for="author" class = "label label-default">작성자</label></h2>
-        <label th:text="*{author}" id="author" class="form-control"></label>
+        <label th:text="*{user.name}" id="author" class="form-control"></label>
         <br>
         <button class = "btn btn-info" type = "submit">수정하기</button>
         <a class="btn btn-danger" href = "javascript:history.back()">돌아가기</a>
