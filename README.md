@@ -8,9 +8,11 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 04월11일 게시글 조회수 및 작성시간 완료
 
+04월12일 DB관게 1:N 재설정 및 댓글 완료
+
 앞으로 진행예정사항
 
-댓글 및 마이페이지
+마이페이지
 
 배포 : http://세일.웹.한국
 
