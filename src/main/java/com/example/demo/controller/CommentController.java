@@ -15,8 +15,8 @@ public class CommentController {
     private final CommentsService commentsService;
     @PostMapping("/comments/{id}/new")
     public String newComment(@PathVariable("id") Long id, CommentForm commentForm, HttpServletRequest request){
-        Users users = (Users) request.getSession().getAttribute("user");
-        commentForm.setAuthor(users.getName());
+        Users user = (Users) request.getSession().getAttribute("user");
+        commentForm.setUser(user);
         commentsService.addComment(id,commentForm);
         String ret = "redirect:/posts/" + id + "/read";
         return ret;

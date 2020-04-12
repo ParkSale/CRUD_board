@@ -41,7 +41,7 @@
         </thead>
         <tbody>
         <tr th:each="comment : ${comments}">
-            <td th:text="${comment.author}"></td>
+            <td th:text="${comment.user.name}"></td>
             <td th:text="${comment.comment}"></td>
             <td th:text="${#temporals.format(comment.registerTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         </tr>
