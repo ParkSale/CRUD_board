@@ -5,16 +5,24 @@ import com.example.demo.domain.Users;
 import com.example.demo.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UsersService {
+public class UsersService implements UserDetailsService {
     private final UsersRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
     @Transactional
     public String join(UserForm userForm) {
         if(usersRepository.findByEmail(userForm.getEmail()) != null){
@@ -26,25 +34,27 @@ public class UsersService {
         Users user = new Users();
         user.setEmail(userForm.getEmail());
         user.setName(userForm.getName());
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setPassword(userForm.getPassword());
         usersRepository.save(user);
         return "success";
     }
 
     @Transactional(readOnly = true)
-    public Users checkUser(UserForm userform) {
-        Users user = usersRepository.findByEmail(userform.getEmail());
-        if(user == null){
-            return null;
-        }
-        else if (passwordEncoder.matches(userform.getPassword(), user.getPassword())){
-            return user;
-        }
-        else return null;
-    }
-
-    @Transactional(readOnly = true)
     public Users findByName(String str) {
         return usersRepository.findByName(str);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user = usersRepository.findByEmail(username);
+        return new User(user.getEmail(),user.getPassword(),authorities());
+    }
+
+    private Collection<? extends GrantedAuthority> authorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public Users findByEmail(String email) {
+        return usersRepository.findByEmail(email);
     }
 }

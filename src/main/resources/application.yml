@@ -23,6 +23,8 @@ logging:
  level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
+  org.springframework.security: debug
+  org.springframework.web: debug
 
 cloud:
  aws:

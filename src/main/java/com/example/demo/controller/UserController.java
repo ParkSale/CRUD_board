@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class UserController {
     private final UsersService usersService;
-
+    private final PasswordEncoder passwordEncoder;
     @GetMapping("/users/new")
     public String makeUserForm(Model model){
         model.addAttribute("userForm",new UserForm());
@@ -25,6 +26,7 @@ public class UserController {
 
     @PostMapping("/users/new")
     public String registerUser(UserForm userForm, Model model){
+        userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
         String ret = usersService.join(userForm);
         model.addAttribute("userForm",userForm);
         model.addAttribute("email","");

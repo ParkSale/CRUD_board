@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,34 +23,22 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        Users user= (Users) session.getAttribute("user");
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         if(user != null){
             return "redirect:/board/lists/1";
         }
-        model.addAttribute("userForm",new UserForm());
-        model.addAttribute("state","");
-        return "home";
-    }
-
-    @PostMapping("/login")
-    public String loginCheck(UserForm userform, Model model, HttpServletRequest request){
-        Users user = usersService.checkUser(userform);
-        if(user == null){
+        UserForm userForm = new UserForm();
+        userForm.setEmail((String) request.getAttribute("email"));
+        String str = request.getParameter("error");
+        if(str == null){
+            model.addAttribute("userForm",userForm);
+            model.addAttribute("state","");
+        }
+        else{
+            model.addAttribute("userForm",userForm);
             model.addAttribute("state","fail");
-            return "home";
         }
-        else {
-            HttpSession session = request.getSession();
-            session.setAttribute("user",user);
-            session.setMaxInactiveInterval(60*30);
-            return "redirect:/board/lists/1";
-        }
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        session.removeAttribute("user");
-        return "redirect:/";
+        return "home";
     }
 }

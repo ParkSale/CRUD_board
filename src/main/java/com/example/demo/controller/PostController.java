@@ -56,10 +56,8 @@ public class PostController {
     @GetMapping("/board/newPost")
     public String newPost(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         PostForm postForm = new PostForm();
         postForm.setUser(user);
         model.addAttribute("postForm", postForm);
@@ -68,10 +66,8 @@ public class PostController {
     @PostMapping("/posts/new")
     public String registerPost(@RequestParam("img") MultipartFile multipartFile, PostForm postForm, HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         Posts post = new Posts();
         post.setTitle(postForm.getTitle());
         post.setUser(user);
@@ -89,10 +85,11 @@ public class PostController {
         return "redirect:/board/lists/1";
     }
 
-    @GetMapping("/posts/{postId}/read")
+    @GetMapping("/posts/read/{postId}")
     public String readPost(@PathVariable("postId") Long postId, Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         Posts post = postsService.findOne(postId);
         postsService.readPost(post);
         model.addAttribute("post",post);
@@ -108,13 +105,11 @@ public class PostController {
         return "board/read";
     }
 
-    @GetMapping("/posts/{postId}/edit")
+    @GetMapping("/posts/edit/{postId}")
     public String editPost(@PathVariable("postId") Long postId, Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         Posts post = postsService.findOne(postId);
         PostForm postForm = new PostForm();
         postForm.setId(post.getId());
@@ -126,13 +121,8 @@ public class PostController {
         return "board/edit";
     }
 
-    @PostMapping("/posts/{postId}/edit")
-    public String editPost(@PathVariable("postId") Long postId, PostForm postForm, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
+    @PostMapping("/posts/edit/{postId}")
+    public String editPost(@PathVariable("postId") Long postId, PostForm postForm) {
         Posts post = postsService.findOne(postId);
         post.setTitle(postForm.getTitle());
         post.setContent(postForm.getContent());
@@ -140,13 +130,8 @@ public class PostController {
         return "redirect:/board/lists/1";
     }
 
-    @GetMapping("/posts/{postId}/del")
-    public String delPost(@PathVariable("postId") Long postId, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
-        if(user == null){
-            return "redirect:/home";
-        }
+    @GetMapping("/posts/del/{postId}")
+    public String delPost(@PathVariable("postId") Long postId){
         postsService.delete(postId);
         return "redirect:/board/lists/1";
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
     <title>박세일의 CRUD게시판 프로젝트</title>
@@ -11,7 +11,6 @@
 <body>
 
 <div class="container">
-
     <form class="form-signing" action="/posts/new" th:object="${postForm}" method = "post" enctype="multipart/form-data">
         <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
         <h2 class="form-signing-heading">새로운 글 쓰기</h2>

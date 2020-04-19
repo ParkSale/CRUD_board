@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
     <title>박세일의 CRUD게시판 프로젝트</title>
@@ -13,11 +13,15 @@
     <form class="form-signing" action= "/login" th:object="${userForm}" method = "post">
         <h2 class="form-signing-heading">로그인</h2>
         <label for="inputEmail" class="sr-only">이메일</label>
-        <input type="email" id="inputEmail" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요" required autofocus>
+        <input type="email" name = "email"id="inputEmail" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요" required autofocus>
         <label for="inputPassword" class="sr-only">비밀번호</label>
-        <input type="password" id="inputPassword" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+        <input type="password" name = "password" id="inputPassword" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력해주세요" required>
         <br>
         <div class = "alert alert-danger" th:if="${state.toString().equals('fail')}"> 아이디와 비밀번호를 확인해주세요</div>
+        <p>
+            <input type="checkbox" id="remember-me" name = "remember-me" class = "custom-control-input">
+            remember-me
+        </p>
         <button class="btn btn-lg btn-primary" type="submit">입장</button>
         <a class="btn btn-lg btn-success" href = "/users/new">회원가입</a>
     </form>

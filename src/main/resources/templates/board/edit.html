@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
     <title>박세일의 CRUD게시판 프로젝트</title>
@@ -10,7 +10,7 @@
 
 <div class="container">
 
-    <form class="form-signing" th:object="${post}"th:action= "@{/posts/{id}/edit (id = ${post.id})}" method = "post" enctype="multipart/form-data">
+    <form class="form-signing" th:object="${post}"th:action= "@{/posts/edit/{id} (id = ${post.id})}" method = "post" enctype="multipart/form-data">
         <a class="btn btn-warning pull-right" th:if=${session.isEmpty()} href = "/home">로그인</a>
         <a class="btn btn-warning pull-right" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
         <br><br>

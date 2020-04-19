@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
     <title>박세일의 CRUD게시판 프로젝트</title>
@@ -26,7 +26,7 @@
         <tr th:each="post : ${posts}">
             <td th:text="${post.id}"></td>
             <td>
-                <a th:text="${post.title}" th:href = "@{/posts/{id}/read (id = ${post.id})}"></a>
+                <a th:text="${post.title}" th:href = "@{/posts/read/{id} (id = ${post.id})}"></a>
             </td>
             <td th:text="${post.user.name}"></td>
             <td th:text="${post.viewCnt}"></td>
