@@ -10,6 +10,8 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 04월12일 DB관게 1:N 재설정 및 댓글 완료
 
+04월20일 SpringSecurity사용해서 로그인,로그아웃,Remember-me 적용 완료
+
 앞으로 진행예정사항
 
 마이페이지
