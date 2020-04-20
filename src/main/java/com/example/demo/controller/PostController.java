@@ -9,6 +9,9 @@ import com.example.demo.service.S3Service;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -34,20 +35,11 @@ public class PostController {
     private final UsersService usersService;
     @GetMapping("/board/lists/{page}")
     public String showBoard(Model model, @PathVariable("page") int page){
-        List<Posts> boardAll = postsService.findAll();
-        int totalCnt = boardAll.size();
-        List<Posts> board = new ArrayList<>();
+        PageRequest pageRequest = PageRequest.of(page - 1,10, Sort.Direction.DESC,"id");
+        Page<Posts> result = postsService.getPage(pageRequest);
         Pagination pagination = new Pagination();
-        pagination.pageInfo(page, totalCnt);
-        int size = pagination.getListSize();
-        for(int i = (page - 1)*size; i < Math.min(totalCnt,(page - 1)*size + size);++i){
-            if(boardAll.get(i).getTitle().length() > 10){
-                Posts tmp = boardAll.get(i);
-                tmp.setTitle(tmp.getTitle().substring(0,9) + "...");
-                board.add(tmp);
-            }
-            else board.add(boardAll.get(i));
-        }
+        pagination.pageInfo(page, result.getTotalElements());
+        List<Posts> board = result.getContent();
         model.addAttribute("pagination",pagination);
         model.addAttribute("posts",board);
         return "board/lists";
@@ -139,34 +131,28 @@ public class PostController {
     @GetMapping("posts/search/{page}")
     public String search(@RequestParam("type") String type, @RequestParam("str") String str,
                          @PathVariable("page") int page, Model model){
+        PageRequest pageRequest = PageRequest.of(page-1,10,Sort.Direction.DESC,"id");
         if(type.equals("title")){
-            List<Posts> boardAll = postsService.findByTitle(str);
-            int totalCnt = boardAll.size();
-            Pagination pagination = postsService.setPagination(page,totalCnt);
-            int size = pagination.getListSize();
-            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            Page<Posts> result = postsService.getPageByTitle(str,pageRequest);
+            Pagination pagination = postsService.setPagination(page,result.getTotalElements());
+            List<Posts> board = result.getContent();
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";
         }
         else if(type.equals("content")){
-            List<Posts> boardAll = postsService.findByContent(str);
-            int totalCnt = boardAll.size();
-            Pagination pagination = postsService.setPagination(page,totalCnt);
-            int size = pagination.getListSize();
-            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            Page<Posts> result = postsService.getPageByContent(str,pageRequest);
+            Pagination pagination = postsService.setPagination(page,result.getTotalElements());
+            List<Posts> board = result.getContent();
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";
         }
         else{
             Users user = usersService.findByName(str);
-            List<Posts> boardAll = user.getPosts();
-            Collections.reverse(boardAll);
-            int totalCnt = boardAll.size();
-            Pagination pagination = postsService.setPagination(page,totalCnt);
-            int size = pagination.getListSize();
-            List<Posts> board = postsService.getBoard(boardAll,size,page,totalCnt);
+            Page<Posts> result = postsService.getPageByUsers(user,pageRequest);
+            Pagination pagination = postsService.setPagination(page,result.getTotalElements());
+            List<Posts> board = result.getContent();
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";

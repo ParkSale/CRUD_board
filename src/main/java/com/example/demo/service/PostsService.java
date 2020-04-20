@@ -1,56 +1,41 @@
 package com.example.demo.service;
 import com.example.demo.domain.Pagination;
 import com.example.demo.domain.Posts;
+import com.example.demo.domain.Users;
 import com.example.demo.repository.PostsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostsService {
     private final PostsRepository postsRepository;
-
-    @Transactional(readOnly = true)
-    public List<Posts> findAll() {
-        return postsRepository.findAll();
-    }
 
     @Transactional
     public void save(Posts post) {
         postsRepository.save(post);
     }
 
-    @Transactional(readOnly = true)
     public Posts findOne(Long postId) {
-        return postsRepository.findOne(postId);
+        return postsRepository.findPostsById(postId);
     }
 
     @Transactional
     public void delete(Long postId) {
-        postsRepository.delete(postId);
+        postsRepository.delete(findOne(postId));
     }
 
-    @Transactional(readOnly = true)
-    public List<Posts> findByTitle(String str) {
-        return postsRepository.findByTitle(str);
-    }
 
-    @Transactional(readOnly = true)
-    public List<Posts> findByContent(String str) {
-        return postsRepository.findByContent(str);
-    }
-    public List<Posts> getBoard(List<Posts> boardAll, int size, int page, int  totalCnt){
-        List<Posts> board = new ArrayList<>();
-        for(int i = (page - 1)*size; i < Math.min(totalCnt,(page - 1)*size + size);++i){
-            board.add(boardAll.get(i));
-        }
-        return board;
-    }
-
-    public Pagination setPagination(int page, int totalCnt) {
+    public Pagination setPagination(long page, long totalCnt) {
         Pagination pagination = new Pagination();
         pagination.pageInfo(page, totalCnt);
         return pagination;
@@ -61,5 +46,20 @@ public class PostsService {
         post.setViewCnt(post.getViewCnt() + 1);
     }
 
+    public Page<Posts> getPage(PageRequest pageRequest) {
+        return postsRepository.findAll(pageRequest);
+    }
+
+    public Page<Posts> getPageByTitle(String str, PageRequest pageRequest) {
+        return postsRepository.findByTitleContaining(str,pageRequest);
+    }
+
+    public Page<Posts> getPageByContent(String str, PageRequest pageRequest) {
+        return postsRepository.findByContentContaining(str,pageRequest);
+    }
+
+    public Page<Posts> getPageByUsers(Users user, PageRequest pageRequest) {
+        return postsRepository.findByUser(user,pageRequest);
+    }
 }
 

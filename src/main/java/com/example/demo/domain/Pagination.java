@@ -8,11 +8,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Pagination {
     private int listSize = 10;
-    private int page;
-    private int totalSize;
+    private long page;
+    private long totalSize;
     private boolean prev;
     private boolean next;
-    public void pageInfo(int page, int totalSize){
+    public void pageInfo(long page, long totalSize){
         this.page = page;
         this.totalSize = totalSize;
         if(page == 1){

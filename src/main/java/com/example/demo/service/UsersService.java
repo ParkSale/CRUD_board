@@ -25,10 +25,10 @@ public class UsersService implements UserDetailsService {
     private final UsersRepository usersRepository;
     @Transactional
     public String join(UserForm userForm) {
-        if(usersRepository.findByEmail(userForm.getEmail()) != null){
+        if(usersRepository.findUsersByEmail(userForm.getEmail()) != null){
             return "email";
         }
-        if(usersRepository.findByName(userForm.getName()) != null){
+        if(usersRepository.findUsersByName(userForm.getName()) != null){
             return "name";
         }
         Users user = new Users();
@@ -41,12 +41,12 @@ public class UsersService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public Users findByName(String str) {
-        return usersRepository.findByName(str);
+        return usersRepository.findUsersByName(str);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = usersRepository.findByEmail(username);
+        Users user = usersRepository.findUsersByEmail(username);
         return new User(user.getEmail(),user.getPassword(),authorities());
     }
 
@@ -55,6 +55,6 @@ public class UsersService implements UserDetailsService {
     }
 
     public Users findByEmail(String email) {
-        return usersRepository.findByEmail(email);
+        return usersRepository.findUsersByEmail(email);
     }
 }
