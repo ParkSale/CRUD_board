@@ -8,9 +8,22 @@
 </head>
 
 <body>
-
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/board/lists/1">게시판</a>
+            <a class="navbar-brand" href="#">채팅</a>
+        </div>
+    </div>
+</nav>
 <div class="container">
-
+    <br><br><br>
     <form class="form-signing" action="/users/new" th:object="${userForm}" th:method = "post">
         <h2 class="form-signing-heading">회원가입</h2>
         <label for="inputEmail" class="sr-only">이메일</label>
