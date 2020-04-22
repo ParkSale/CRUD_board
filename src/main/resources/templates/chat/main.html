@@ -59,7 +59,7 @@
         send();
     })
     function connect(){
-        webSocket = new WebSocket("ws://http://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080/chat/send");
+        webSocket = new WebSocket("ws://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080/chat/send");
         webSocket.onopen = onOpen;
         webSocket.onmessage = onMessage;
     }
