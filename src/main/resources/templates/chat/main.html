@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
+    <title>박세일의 CRUD게시판 프로젝트</title>
+    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
+
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" id = "board" href = "javascript:goBoard()">게시판</a>
+            <h class="navbar-brand">채팅</h>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <br><br><br>
+    <div id = "chatroom" style = "overflow:auto; width:800px;  height: 600px; border:1px solid; background-color : gray">
+    </div>
+    <input type = "text" id = "message" style = "height : 30px; width : 740px" placeholder="내용을 입력하세요" autofocus>
+    <button class = "btn btn-primary" id = "send">전송</button>
+</div> <!-- /container -->
+<div class="modal fade" id="pop" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                페이지를 나가면 채팅기록이 사라집니다. 정말로 종료하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "y">예</button>
+                <button type="button" class="btn btn-default" id = "n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:inline = "javascript">
+    var webSocket;
+    /* <![CDATA[*/
+    var nickname = /*[[${nickname}]]*/;
+    /* ]]> */
+    connect();
+    document.getElementById("send").addEventListener("click",function(){
+        send();
+    })
+    function connect(){
+        webSocket = new WebSocket("ws://세일.웹.한국/chat/send");
+        webSocket.onopen = onOpen;
+        webSocket.onmessage = onMessage;
+    }
+    function send(){
+        msg = document.getElementById("message").value;
+        webSocket.send(JSON.stringify({type:'CHAT',writer:nickname,message : msg}));
+        document.getElementById("message").value = "";
+    }
+    function onOpen(){
+        webSocket.send(JSON.stringify({type:'ENTER',writer:nickname}));
+    }
+    function onMessage(e){
+        data = e.data;
+        chatroom = document.getElementById("chatroom");
+        chatroom.innerHTML = chatroom.innerHTML + "<h>" + data + "</h><br>";
+    }
+    function goBoard(){
+        $("#pop").modal();
+        document.getElementById("y").onclick = function(){
+            webSocket.send(JSON.stringify({type:'LEAVE',writer:nickname}));
+            webSocket.close();
+            window.location.href="/board/lists/1";
+        }
+        document.getElementById("n").onclick = function(){
+            $("#pop").modal("hide");
+        }
+    }
+    window.onbeforeunload = function(e){
+        webSocket.send(JSON.stringify({type:'LEAVE',writer:nickname}));
+        webSocket.close();
+    };
+
+
+</script>
+</html>
