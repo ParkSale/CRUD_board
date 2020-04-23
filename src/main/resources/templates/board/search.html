@@ -67,24 +67,24 @@
     </div>
     <a class ="btn btn-primary pull-right" href = "/board/newPost">글쓰기</a>
 </div>
-</body>
+<div class="modal fade" id="pop" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "y">예</button>
+                <button type="button" class="btn btn-default" id = "n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script>
-    function nextGo(){
-        param = document.location.href.split('?')[1];
-        page = parseInt(document.location.href.split('/')[5]) + 1;
-        location.replace("/posts/search/" + page + '?' + param);
-    }
-    function prevGo(){
-        param = document.location.href.split('?')[1];
-        page = parseInt(document.location.href.split('/')[5]) - 1;
-        location.replace("/posts/search/" + page + '?' + param);
-    }
-    function logout(){
-        if(window.confirm("로그아웃 하시겠습니까??")){
-            window.location.href="/logout";
-        }
-    }
-</script>
+<script type="text/javascript" src="func.js"></script>
+</body>
 </html>

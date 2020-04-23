@@ -19,13 +19,16 @@ import java.util.Set;
 @Getter @Setter
 public class ChatService {
     private Set<WebSocketSession> sessions = new HashSet<>();
+    private HashSet<String> participants = new HashSet<>();
     public void handleMessage(WebSocketSession session, ChatMessage chatMessage, ObjectMapper objectMapper) throws IOException {
         if(chatMessage.getType() == MessageType.ENTER){
             sessions.add(session);
+            participants.add(chatMessage.getWriter());
             chatMessage.setMessage(chatMessage.getWriter() + "님이 입장하셨습니다.");
         }
         else if(chatMessage.getType() == MessageType.LEAVE){
             sessions.remove(session);
+            participants.remove(chatMessage.getWriter());
             chatMessage.setMessage(chatMessage.getWriter() + "님이 퇴장하셨습니다.");
         }
         else{

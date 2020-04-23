@@ -60,35 +60,25 @@
     </form>
 
 </div> <!-- /container -->
-
-
-</body>
+<div class="modal fade" id="pop" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "y">예</button>
+                <button type="button" class="btn btn-default" id = "n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type = "text/javascript">
-    function fileChk(input) {
-        path = input.value.lastIndexOf('.');
-        filePoint = input.value.substring(path+1,input.length);
-        type = filePoint.toLowerCase();
-        if(!(type == 'jpg' || type == 'gif' || type == 'png' || type == 'jpeg')){
-            alert("jpg, gif, png, jpeg중 하나를 업로드해주세요!");
-            e.value = '';
-        }
-        else{
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#imagePreview').attr('src',e.target.result);
-                document.getElementById('imagePreview').style.display = "block";
-            }
-            reader.readAsDataURL(input.files[0]);
-            console.log(input.files[0]);
-        }
+<script type="text/javascript" src="func.js"></script>
 
-    }
-    function logout(){
-        if(window.confirm("로그아웃 하시겠습니까??")){
-            window.location.href="/logout";
-        }
-    }
-</script>
+</body>
 </html>

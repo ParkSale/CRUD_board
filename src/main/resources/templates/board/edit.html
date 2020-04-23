@@ -54,20 +54,29 @@
         <label th:text="*{user.name}" id="author" class="form-control"></label>
         <br>
         <button class = "btn btn-info" type = "submit">수정하기</button>
-        <a class="btn btn-danger" href = "javascript:history.back()">돌아가기</a>
+        <a class="btn btn-danger" th:href = "@{/posts/read/{id} (id= ${post.id})}">돌아가기</a>
     </form>
 
 </div> <!-- /container -->
+<div class="modal fade" id="pop" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "y">예</button>
+                <button type="button" class="btn btn-default" id = "n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-</body>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script>
-    function logout(){
-        if(window.confirm("로그아웃 하시겠습니까??")){
-            window.location.href="/logout";
-        }
-    }
-</script>
+<script type="text/javascript" src="func.js"></script>
+</body>
 </html>
