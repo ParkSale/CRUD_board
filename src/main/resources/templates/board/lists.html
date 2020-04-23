@@ -87,6 +87,16 @@
 
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="func.js"></script>
+<script>
+    function logout(){
+        $("#pop").modal();
+        document.getElementById("y").onclick = function(){
+            window.location.href="/logout";
+        }
+        document.getElementById("n").onclick = function(){
+            $("#pop").modal("hide");
+        }
+    }
+</script>
 </body>
 </html>

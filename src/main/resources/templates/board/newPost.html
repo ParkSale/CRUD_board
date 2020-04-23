@@ -78,7 +78,36 @@
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="func.js"></script>
+<script>
+    function logout(){
+        $("#pop").modal();
+        document.getElementById("y").onclick = function(){
+            window.location.href="/logout";
+        }
+        document.getElementById("n").onclick = function(){
+            $("#pop").modal("hide");
+        }
+    }
+    function fileChk(input) {
+        path = input.value.lastIndexOf('.');
+        filePoint = input.value.substring(path+1,input.length);
+        type = filePoint.toLowerCase();
+        if(!(type == 'jpg' || type == 'gif' || type == 'png' || type == 'jpeg')){
+            alert("jpg, gif, png, jpeg중 하나를 업로드해주세요!");
+            input.value = '';
+        }
+        else{
+            var reader = new FileReader();
+            reader.onload = function(e){
+                $('#imagePreview').attr('src',e.target.result);
+                document.getElementById('imagePreview').style.display = "block";
+            }
+            reader.readAsDataURL(input.files[0]);
+            console.log(input.files[0]);
+        }
+
+    }
+</script>
 
 </body>
 </html>
