@@ -17,30 +17,47 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" id = "board" href = "javascript:goBoard()">게시판</a>
-            <h class="navbar-brand">채팅</h>
+            <a class="navbar-brand" id = "board" href = "/board/lists/1">게시판</a>
+            <h class="navbar-brand">메시지</h>
         </div>
     </div>
 </nav>
 <div class="container">
+    <br><br><br>
     <div class="alert alert-success" id="successMessage" style="display : none">
         <strong>메세지 전송에 성공했습니다.</strong>
     </div>
     <div class="alert alert-danger" id="failMessage" style="display : none">
         <strong>메세지 전송에 실패했습니다. 확인 후 다시 시도해 주세요.</strong>
     </div>
+    <div class="alert alert-success" id="comeMessage" style="display : none">
+        <strong>새로운 메세지가 도착했습니다!</strong>
+    </div>
     <div class="container bootstrap snippet">
         <div class="row">
             <div class="col-xs-12">
                 <div class="portlet portlet-default">
                     <div class="portlet-title">
-                        <h4><i class="fa fa-circle text-green">채팅방</i></h4>
+                        <h4 class="fa fa-circle text-green">채팅방</h4>
                         <hr>
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div id="chat" class="panel-collapse collapse in">
-                    <div id = "space" class="portlet-body chat-widget" style="overflow-y : auto; width:auto; height:500px;">
+                    <div id = "space" class="portlet-body chat-widget" style="overflow-y : auto; width:auto; height:400px;">
+                        <div class='row' th:each = "message:${messages}">
+                            <div class='col-lg-12'>
+                                <div class='media'>
+                                    <div class='media-body'>
+                                        <h4 class='media-heading' th:text="${message.sender}">
+                                            <h4 class='small pull-right' th:text="${message.sendTime}"></h4>
+                                        </h4>
+                                    </div>
+                                    <p th:text="${message.message}"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
                     </div>
                     <div class="portlet-footer">
                         <div class="row">
@@ -49,10 +66,13 @@
                         </div>
                         <div class="row" style="height:90px">
                             <div class="form-group col-xs-10">
+                                <input type="text" id="receiver" class="form-control" placeholder="받는이" maxlength="20">
+                            </div>
+                            <div class="form-group col-xs-10">
                                 <textarea style="height:80px;" id="message" class="form-control" placeholder="메세지를 입력하세요." maxlength="100"></textarea>
                             </div>
                             <div class="form-group col-xs-2">
-                                <button type="button" class="btn btn-default pull-right" onclick="send()">전송</button>
+                                <button type="button" class="btn btn-default pull-right" onclick = "send()">전송</button>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -62,70 +82,60 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="pop" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">알림!</h4>
-            </div>
-            <div class="modal-body">
-                페이지를 나가면 채팅기록이 사라집니다. 정말로 종료하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" id = "y">예</button>
-                <button type="button" class="btn btn-default" id = "n">아니오</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script th:inline = "javascript">
-    var webSocket;
     /* <![CDATA[*/
     var nickname = /*[[${nickname}]]*/;
     /* ]]> */
+    var stompClient = null;
     connect();
-    document.getElementById("send").addEventListener("click",function(){
-        send();
-    })
-    function connect(){
-        webSocket = new WebSocket("ws://ec2-15-165-147-64.ap-northeast-2.compute.amazonaws.com:8080/chat/send");
-        webSocket.onopen = onOpen;
-        webSocket.onmessage = onMessage;
+
+    function connect() {
+        var socket = new SockJS('/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function () {
+            stompClient.subscribe('/topic/' + nickname, function (e) {
+                showMessage(JSON.parse(e.body));
+                alertClosing('comeMessage',2000);
+            });
+        });
     }
-    function send(){
-        msg = document.getElementById("message").value;
-        webSocket.send(JSON.stringify({type:'CHAT',writer:nickname,message : msg}));
-        document.getElementById("message").value = "";
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
     }
-    function onOpen(){
-        webSocket.send(JSON.stringify({type:'ENTER',writer:nickname}));
+
+    function send() {
+        stompClient.send("/app/chat/send", {}, JSON.stringify({'sender' :nickname, 'receiver':$("#receiver").val(),'message': $("#message").val()}));
+        $("#receiver").val('');
+        $("#message").val('');
+        alertClosing('successMessage',2000);
     }
-    function onMessage(e){
+
+    function showMessage(e) {
         space = document.getElementById("space");
-        space.innerHTML = space.innerHTML + "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
-            "<h4 class='small pull-right'></h4> </h4> </div> <p>" +
-            e.data + "</p> </div> </div> </div> <hr>";
+        space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
+            e.sender + "<h4 class='small pull-right'>" + e.sendTime + "</h4> </h4> </div> <p>" +
+            e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
         space.scrollTop = space.scrollHeight;
-        
-    }
-    function goBoard(){
-        $("#pop").modal();
-        document.getElementById("y").onclick = function(){
-            webSocket.send(JSON.stringify({type:'LEAVE',writer:nickname}));
-            webSocket.close();
-            window.location.href="/board/lists/1";
-        }
-        document.getElementById("n").onclick = function(){
-            $("#pop").modal("hide");
-        }
     }
     window.onbeforeunload = function(e){
-        webSocket.send(JSON.stringify({type:'LEAVE',writer:nickname}));
-        webSocket.close();
+        disconnect();
     };
+
+    function alertClosing(selector, delay){
+        console.log(selector);
+        document.getElementById(selector).style.display = "block";
+        window.setTimeout(function(){
+            document.getElementById(selector).style.display = "none";
+        },delay);
+    }
 </script>
 </html>
