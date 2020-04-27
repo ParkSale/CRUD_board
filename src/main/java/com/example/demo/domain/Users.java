@@ -21,11 +21,13 @@ public class Users {
     private String password;
     @Column(nullable = false)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Posts> posts = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Comments> comments = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id")
     private List<UserRole> roles;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    private List<UserRole> posts;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "comment_id")
+    private List<UserRole> comments;
 }

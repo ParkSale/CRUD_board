@@ -128,7 +128,7 @@ public class PostController {
         return "redirect:/board/lists/1";
     }
 
-    @GetMapping("posts/search/{page}")
+    @GetMapping("/posts/search/{page}")
     public String search(@RequestParam("type") String type, @RequestParam("str") String str,
                          @PathVariable("page") int page, Model model){
         PageRequest pageRequest = PageRequest.of(page-1,10,Sort.Direction.DESC,"id");

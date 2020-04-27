@@ -52,16 +52,15 @@
                 </div>
                 <div id="chat" class="panel-collapse collapse in">
                     <div id = "space" class="portlet-body chat-widget" style="overflow-y : auto; width:auto; height:400px;">
-                        <div class='row' th:each = "chatRoom:${chatRooms}">
+                        <div class='row' th:each = "message:${messages}">
                             <div class='col-lg-12'>
                                 <div class='media'>
                                     <div class='media-body'>
-                                        <h4 class='media-heading' th:text = "${chatRoom.writer}">
+                                        <h4 class='media-heading' th:text="${message.writer.name}">
 
                                         </h4>
                                     </div>
-                                    <p th:text = "${chatRoom.lastMessage}"></p>
-                                    <a class="btn btn-default pull-right" th:href = "@{/personalChat/{id} (id = ${chatRoom.id})}">입장</a>
+                                    <p th:text="${message.message}"></p>
                                 </div>
                             </div>
                             <hr>
@@ -73,16 +72,13 @@
                             </div>
                         </div>
                         <div class="row" style="height:90px">
-                            <form method = "POST" action = /chat/newChat>
-                                <div class="form-group col-xs-10">
-                                    <input type="text" name= "receiver" class="form-control" placeholder="상대방 이름을 입력하세요" maxlength="20" required>
-                                    <input type="hidden" name = "sender" th:value="${nickname}">
-                                </div>
-                                <div class="form-group col-xs-2">
-                                    <button type="submit" class="btn btn-default pull-right">채팅방 만들기</button>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </form>
+                            <div class="form-group col-xs-10">
+                                <textarea id="message" class="form-control" placeholder="메시지를 입력하세요" maxlength="100"></textarea>
+                            </div>
+                            <div class="form-group col-xs-2">
+                                <button type="button" class="btn btn-default pull-right" onclick = "send()">전송하기</button>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -113,15 +109,24 @@
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script th:inline = "javascript">
     /* <![CDATA[*/
+    var chatRoomId = /*[[${chatRoomId}]]*/;
+    /* ]]> */
+    /* <![CDATA[*/
     var nickname = /*[[${nickname}]]*/;
     /* ]]> */
+    /* <![CDATA[*/
+    var receiver = /*[[${receiver}]]*/;
+    /* ]]> */
     var stompClient = null;
+    var d = new Date();
     connect();
+
     function connect() {
         var socket = new SockJS('/chat');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function () {
             stompClient.subscribe('/topic/' + nickname, function (e) {
+                showMessage(JSON.parse(e.body));
                 alertClosing('comeMessage',2000);
             });
         });
@@ -132,6 +137,22 @@
             stompClient.disconnect();
         }
     }
+
+    function send() {
+        data = {'chatRoomId': chatRoomId, 'sender' :nickname, 'receiver': receiver,'message': $("#message").val()};
+        stompClient.send("/app/chat/send", {}, JSON.stringify(data));
+        showMessage(data);
+        $("#message").val('');
+        alertClosing('successMessage',2000);
+    }
+
+    function showMessage(e) {
+        space = document.getElementById("space");
+        space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
+            e.sender + "</h4> </div> <p>" +
+            e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
+        space.scrollTop = space.scrollHeight;
+    };
     window.onbeforeunload = function(e){
         disconnect();
     }

@@ -23,7 +23,7 @@ public class Posts {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private Users user;
 
     private String fileName;

@@ -29,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/chat/send","/","/board/lists/**","/login","/home","/users/new","/posts/search/**","/posts/read/**","/comments/new/**","/static/**").permitAll()
+                .antMatchers("/","/board/lists/**","/login","/home","/users/new","/posts/search/**","/posts/read/**","/comments/new/**","/static/**").permitAll()
                 .antMatchers("/**").hasRole("USER")
                 .and()
                 .csrf().disable()		//post방식이 안받아짐 없으면

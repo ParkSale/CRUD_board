@@ -7,9 +7,15 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
-public class UserRole {
+public class ChatRoomJoin {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="role_id")
     private Long id;
-    private String roleName;
+
+    @ManyToOne
+    @JoinColumn(name =  "user_id")
+    private Users user;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom chatRoom;
 }
