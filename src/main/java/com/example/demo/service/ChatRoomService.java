@@ -14,4 +14,8 @@ public class ChatRoomService {
     public Optional<ChatRoom> findById(Long id) {
         return chatRoomRepository.findById(id);
     }
+
+    public void remove(Long id) {
+        chatRoomRepository.delete(findById(id).get());
+    }
 }

@@ -46,8 +46,11 @@ public class ChatRoomController {
                 chatRoomForm.setLastMessage(lastMessage.getMessage());
                 chatRoomForm.setWriter(lastMessage.getWriter().getName());
                 chatRoomForm.setTime(lastMessage.getTime());
+                chatRooms.add(chatRoomForm);
             }
-            chatRooms.add(chatRoomForm);
+            else{
+                chatRoomService.remove(chatRoom.getId());
+            }
         }
         model.addAttribute("chatRooms",chatRooms);
         return "chat/main";
@@ -69,7 +72,7 @@ public class ChatRoomController {
         List<ChatMessage> messages = chatRoom.getMessages();
         Collections.reverse(messages);
         List<ChatRoomJoin> list = chatRoomJoinService.findByChatRoom(chatRoom);
-        model.addAttribute("messages",messages);
+        model.addAttribute( "messages",messages);
         model.addAttribute("nickname",user.getName());
         model.addAttribute("chatRoomId",chatRoomId);
         for(ChatRoomJoin join : list){
