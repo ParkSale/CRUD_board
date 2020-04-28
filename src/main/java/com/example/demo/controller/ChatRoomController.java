@@ -80,6 +80,6 @@ public class ChatRoomController {
                 model.addAttribute("receiver",join.getUser().getName());
             }
         }
-        return "/chat/chatRoom";
+        return "chat/chatRoom";
     }
 }
