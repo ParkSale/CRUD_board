@@ -20,12 +20,9 @@ public class Users {
     @Column(nullable = false)
     private String name;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id")
-    private List<UserRole> roles;
-    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
-    private List<UserRole> posts;
+    private List<Posts> posts;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
-    private List<UserRole> comments;
+    private List<Comments> comments;
 }

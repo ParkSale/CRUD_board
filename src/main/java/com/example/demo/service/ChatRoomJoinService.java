@@ -41,19 +41,28 @@ public class ChatRoomJoinService {
     public Long newRoom(String user1, String user2) {
         Long ret = check(user1,user2);
         if(ret != 0){
+            //이미 존재하는 방이면 해당 방 번호 리턴
             return ret;
         }
         ChatRoom chatRoom = new ChatRoom();
         ChatRoom newChatRoom = chatRoomRepository.save(chatRoom);
-        ChatRoomJoin chatRoomJoin1 = new ChatRoomJoin();
-        chatRoomJoin1.setChatRoom(newChatRoom);
-        chatRoomJoin1.setUser(usersService.findByName(user1));
-        ChatRoomJoin chatRoomJoin2 = new ChatRoomJoin();
-        chatRoomJoin2.setChatRoom(newChatRoom);
-        chatRoomJoin2.setUser(usersService.findByName(user2));
-        chatRoomJoinRepository.save(chatRoomJoin1);
-        chatRoomJoinRepository.save(chatRoomJoin2);
+        if(user1.equals(user2)){
+            //나 자신과의 채팅은 한명만 존재
+            createRoom(user1,newChatRoom);
+        }
+        else{
+            //두명 다 입장
+            createRoom(user1,newChatRoom);
+            createRoom(user2,newChatRoom);
+        }
         return newChatRoom.getId();
+    }
+
+    public void createRoom(String user, ChatRoom chatRoom){
+        ChatRoomJoin chatRoomJoin = new ChatRoomJoin();
+        chatRoomJoin.setChatRoom(chatRoom);
+        chatRoomJoin.setUser(usersService.findByName(user));
+        chatRoomJoinRepository.save(chatRoomJoin);
     }
 
     public List<ChatRoomJoin> findByChatRoom(ChatRoom chatRoom) {

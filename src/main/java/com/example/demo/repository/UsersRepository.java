@@ -14,4 +14,6 @@ import java.util.List;
 public interface UsersRepository extends CrudRepository<Users,Long> {
     public Users findUsersByEmail(String email);
     public Users findUsersByName(String name);
+    @Query("SELECT u.name FROM Users u WHERE u.name LIKE :name")
+    public List<String> findNameByContaining(@Param("name")String receiver);
 }
