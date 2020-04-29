@@ -15,7 +15,4 @@ public class ChatRoomService {
         return chatRoomRepository.findById(id);
     }
 
-    public void remove(Long id) {
-        chatRoomRepository.delete(findById(id).get());
-    }
 }

@@ -68,4 +68,8 @@ public class ChatRoomJoinService {
     public List<ChatRoomJoin> findByChatRoom(ChatRoom chatRoom) {
         return chatRoomJoinRepository.findByChatRoom(chatRoom);
     }
+
+    public void delete(ChatRoomJoin chatRoomJoin) {
+        chatRoomJoinRepository.delete(chatRoomJoin);
+    }
 }

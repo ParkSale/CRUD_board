@@ -17,17 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final UsersService usersService;
     private final ChatRoomJoinService chatRoomJoinService;
-    private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
     @GetMapping("/chat")
     public String chatHome(HttpServletRequest request, Model model){
@@ -49,7 +45,7 @@ public class ChatRoomController {
                 chatRooms.add(chatRoomForm);
             }
             else{
-                chatRoomService.remove(chatRoom.getId());
+                chatRoomJoinService.delete(tmp);
             }
         }
         model.addAttribute("chatRooms",chatRooms);

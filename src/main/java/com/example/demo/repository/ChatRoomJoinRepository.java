@@ -13,4 +13,5 @@ public interface ChatRoomJoinRepository extends CrudRepository<ChatRoomJoin,Long
     public List<ChatRoomJoin> findByUser(Users user);
 
     public List<ChatRoomJoin> findByChatRoom(ChatRoom chatRoom);
+
 }

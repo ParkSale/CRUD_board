@@ -108,7 +108,6 @@
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script th:inline = "javascript">
     /* <![CDATA[*/
@@ -164,20 +163,27 @@
             }
         });
     })
-    function nameChk(e){
+    function nameChk(){
+        var flag = false;
         $.ajax({
             type:'GET',
             url: '/users/nameChk/' + $("#receiver").val(),
-            contentType: 'application/json; charset=utf-8'
+            contentType: 'application/json; charset=utf-8',
+            async: false
         }).done(function(e){
             if(e == "success"){
-                return true;
+                console.log(e);
+                flag = true;
             }
-            alertClosing("nameMessage",2000);
+            else {
+                flag = false;
+                alertClosing("nameMessage",2000);
+            }
         }).fail(function(e){
+            flag = false;
             alertClosing("failMessage",2000);
         })
-        return false;
+        return flag;
     }
 </script>
 </html>
