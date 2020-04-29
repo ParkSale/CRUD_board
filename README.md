@@ -1,20 +1,20 @@
 # CRUD_board
 CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
+http://세일.웹.한국
 
 진행현황 : https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20CRUD%EA%B2%8C%EC%8B%9C%ED%8C%90
 
-04월09일 S3로 이미지저장하고 배포까지 1단계 완료
+1. 회원가입 및 로그인
 
-04월11일 게시글 조회수 및 작성시간 완료
+2. 게시글 작성/수정/삭제
 
-04월12일 DB관게 1:N 재설정 및 댓글 완료
+3. 작성자 / 내용 / 제목별 검색기능
 
-04월20일 SpringSecurity사용해서 로그인,로그아웃,Remember-me 적용 완료
+4. 댓글 작성
 
-앞으로 진행예정사항
+5. S3이용한 이미지 업로드
 
-마이페이지
+6. Stomp와 SockJS를 이용한 1:1 실시간 채팅
 
-배포 : http://세일.웹.한국
-
+7. ajax를 이용한 사용자 자동완성 검색기능
