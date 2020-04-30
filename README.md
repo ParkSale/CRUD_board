@@ -23,6 +23,6 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 # 예정
 1. myPage구현
 
-# ERD
+# ERD(수정예정)
 
 <img src="https://user-images.githubusercontent.com/34956785/80738566-33beac80-8b50-11ea-9b84-cb564cd5b9e6.PNG">
