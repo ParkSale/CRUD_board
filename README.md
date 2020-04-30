@@ -5,7 +5,7 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 진행현황 : https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20%EC%8B%9C%EB%A6%AC%EC%A6%88
 
-#완료
+# 완료
 1. 회원가입 및 로그인
 
 2. 게시글 작성/수정/삭제
@@ -20,9 +20,9 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 7. ajax를 이용한 사용자 자동완성 검색기능
 
-#예정
+# 예정
 1. myPage구현
 
-#ERD
+# ERD
 
 <img src="https://user-images.githubusercontent.com/34956785/80738566-33beac80-8b50-11ea-9b84-cb564cd5b9e6.PNG">
