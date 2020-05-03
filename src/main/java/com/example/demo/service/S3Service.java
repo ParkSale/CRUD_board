@@ -24,7 +24,7 @@ public class S3Service {
     @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
 
-    private String bucket = "crudboardimage";
+    private String bucket = "crudimage";
 
     private String region = "ap-northeast-2";
 
