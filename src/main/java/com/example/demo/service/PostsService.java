@@ -61,5 +61,19 @@ public class PostsService {
     public Page<Posts> getPageByUsers(Users user, PageRequest pageRequest) {
         return postsRepository.findByUser(user,pageRequest);
     }
+
+    public List<Posts> titleSetting(List<Posts> content) {
+        List<Posts> ret = new ArrayList<>();
+        for(Posts posts : content){
+            if(posts.getTitle().length() >= 15){
+                posts.setTitle(posts.getTitle().substring(0,14) + "...");
+            }
+            if(posts.getComments().size() != 0){
+                posts.setTitle(posts.getTitle() + "[" + posts.getComments().size() + "]");
+            }
+            ret.add(posts);
+        }
+        return ret;
+    }
 }
 

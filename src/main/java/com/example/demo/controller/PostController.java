@@ -39,7 +39,7 @@ public class PostController {
         Page<Posts> result = postsService.getPage(pageRequest);
         Pagination pagination = new Pagination();
         pagination.pageInfo(page, result.getTotalElements());
-        List<Posts> board = result.getContent();
+        List<Posts> board = postsService.titleSetting(result.getContent());
         model.addAttribute("pagination",pagination);
         model.addAttribute("posts",board);
         return "board/lists";
@@ -135,7 +135,7 @@ public class PostController {
         if(type.equals("title")){
             Page<Posts> result = postsService.getPageByTitle(str,pageRequest);
             Pagination pagination = postsService.setPagination(page,result.getTotalElements());
-            List<Posts> board = result.getContent();
+            List<Posts> board = postsService.titleSetting(result.getContent());
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";
@@ -143,7 +143,7 @@ public class PostController {
         else if(type.equals("content")){
             Page<Posts> result = postsService.getPageByContent(str,pageRequest);
             Pagination pagination = postsService.setPagination(page,result.getTotalElements());
-            List<Posts> board = result.getContent();
+            List<Posts> board = postsService.titleSetting(result.getContent());
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";
@@ -152,7 +152,7 @@ public class PostController {
             Users user = usersService.findByName(str);
             Page<Posts> result = postsService.getPageByUsers(user,pageRequest);
             Pagination pagination = postsService.setPagination(page,result.getTotalElements());
-            List<Posts> board = result.getContent();
+            List<Posts> board = postsService.titleSetting(result.getContent());
             model.addAttribute("pagination",pagination);
             model.addAttribute("posts",board);
             return "board/search";

@@ -19,10 +19,8 @@ public class Users {
     private String password;
     @Column(nullable = false)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
+    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL)
     private List<Posts> posts;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "comment_id")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comments> comments;
 }
