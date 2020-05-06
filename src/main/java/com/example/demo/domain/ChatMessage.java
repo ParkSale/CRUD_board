@@ -14,14 +14,16 @@ public class ChatMessage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
     private Long id;
+    @Column(nullable = false)
     private String message;
+    @Column(nullable = false)
     private LocalDateTime time;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = false)
     private ChatRoom chatRoom;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private Users writer;
 }
