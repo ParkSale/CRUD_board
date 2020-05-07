@@ -34,7 +34,10 @@ public class PostController {
     private final S3Service s3Service;
     private final UsersService usersService;
     @GetMapping("/board/lists/{page}")
-    public String showBoard(Model model, @PathVariable("page") int page){
+    public String showBoard(Model model, @PathVariable("page") int page, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
         PageRequest pageRequest = PageRequest.of(page - 1,10, Sort.Direction.DESC,"id");
         Page<Posts> result = postsService.getPage(pageRequest);
         Pagination pagination = new Pagination();
@@ -42,6 +45,12 @@ public class PostController {
         List<Posts> board = postsService.titleSetting(result.getContent());
         model.addAttribute("pagination",pagination);
         model.addAttribute("posts",board);
+        if(user == null){
+            model.addAttribute("userName","");
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+        }
         return "board/lists";
     }
 

@@ -71,10 +71,15 @@ public class ChatRoomController {
         model.addAttribute( "messages",messages);
         model.addAttribute("nickname",user.getName());
         model.addAttribute("chatRoomId",chatRoomId);
+        int cnt = 0;
         for(ChatRoomJoin join : list){
             if(join.getUser().getName().equals(user.getName()) == false){
                 model.addAttribute("receiver",join.getUser().getName());
+                ++cnt;
             }
+        }
+        if(cnt >= 2){
+            return "redirect:/chat";
         }
         return "chat/chatRoom";
     }

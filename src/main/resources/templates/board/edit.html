@@ -30,8 +30,8 @@
                     <input type="text" name = "str" placeholder="입력하세요" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">검색</button>
-                <a class="btn btn-warning" th:if=${session.isEmpty()} href = "/home">로그인</a>
-                <a class="btn btn-warning" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
+                <a class="btn btn-warning" th:if="${userName.toString().length() == 0}" href = "/home">로그인</a>
+                <a class="btn btn-warning" th:if="${userName.toString().length() != 0}" href = "javascript:logout()">로그아웃</a>
             </form>
         </div>
     </div>

@@ -30,8 +30,8 @@
                     <input type="text" name = "str" placeholder="입력하세요" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">검색</button>
-                <a class="btn btn-warning" th:if=${session.isEmpty()} href = "/home">로그인</a>
-                <a class="btn btn-warning" th:if=${!session.isEmpty()} href = "javascript:logout()">로그아웃</a>
+                <a class="btn btn-warning" th:if="${userName.toString().length() == 0}" href = "/home">로그인</a>
+                <a class="btn btn-warning" th:if="${userName.toString().length() != 0}" href = "javascript:logout()">로그아웃</a>
             </form>
         </div>
     </div>
@@ -74,7 +74,7 @@
         </tr>
         </tbody>
     </table>
-    <form class="form-signing" th:if=${!session.isEmpty()} th:object="${commentForm}" th:action = "@{/comments/new/{id} (id = ${post.id})}" method = "post">
+    <form class="form-signing" th:if="${userName.toString().length() != 0}" th:object="${commentForm}" th:action = "@{/comments/new/{id} (id = ${post.id})}" method = "post">
         <h2><label for="comment" class = "label label-default">댓글입력</label></h2>
         <textarea id="comment" th:field="*{comment}" class="form-control" placeholder="내용을 입력해주세요" required></textarea>
         <br>
