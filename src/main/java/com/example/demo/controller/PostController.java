@@ -139,7 +139,16 @@ public class PostController {
 
     @GetMapping("/posts/search/{page}")
     public String search(@RequestParam("type") String type, @RequestParam("str") String str,
-                         @PathVariable("page") int page, Model model){
+                         @PathVariable("page") int page, Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
+        if(user == null){
+            model.addAttribute("userName","");
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+        }
         PageRequest pageRequest = PageRequest.of(page-1,10,Sort.Direction.DESC,"id");
         if(type.equals("title")){
             Page<Posts> result = postsService.getPageByTitle(str,pageRequest);
@@ -158,8 +167,8 @@ public class PostController {
             return "board/search";
         }
         else{
-            Users user = usersService.findByName(str);
-            Page<Posts> result = postsService.getPageByUsers(user,pageRequest);
+            Users searchUser = usersService.findByName(str);
+            Page<Posts> result = postsService.getPageByUsers(searchUser,pageRequest);
             Pagination pagination = postsService.setPagination(page,result.getTotalElements());
             List<Posts> board = postsService.titleSetting(result.getContent());
             model.addAttribute("pagination",pagination);
