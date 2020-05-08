@@ -59,6 +59,12 @@ public class PostController {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         Users user = usersService.findByEmail(email);
+        if(user == null){
+            model.addAttribute("userName","");
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+        }
         PostForm postForm = new PostForm();
         postForm.setUser(user);
         model.addAttribute("postForm", postForm);
