@@ -21,8 +21,7 @@
             <a class="navbar-brand" href="/chat">메시지</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <a class="btn btn-warning" th:if="${userName.toString().length() == 0}" href = "/home">로그인</a>
-            <a class="btn btn-warning" th:if="${userName.toString().length() != 0}" href = "javascript:logout()">로그아웃</a>
+            <a class="btn btn-warning" href = "javascript:logout()">로그아웃</a>
         </div>
     </div>
 </nav>
