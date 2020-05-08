@@ -118,6 +118,9 @@ public class PostController {
         String email = (String) session.getAttribute("email");
         Users user = usersService.findByEmail(email);
         Posts post = postsService.findOne(postId);
+        if(post.getUser().getName().equals(user.getName()) == false){
+            return "redirect:/board/lists/1";
+        }
         PostForm postForm = new PostForm();
         postForm.setId(post.getId());
         postForm.setUser(user);
@@ -138,7 +141,14 @@ public class PostController {
     }
 
     @GetMapping("/posts/del/{postId}")
-    public String delPost(@PathVariable("postId") Long postId){
+    public String delPost(@PathVariable("postId") Long postId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        Users user = usersService.findByEmail(email);
+        Posts post = postsService.findOne(postId);
+        if(post.getUser().getName().equals(user.getName()) == false){
+            return "redirect:/board/lists/1";
+        }
         postsService.delete(postId);
         return "redirect:/board/lists/1";
     }
