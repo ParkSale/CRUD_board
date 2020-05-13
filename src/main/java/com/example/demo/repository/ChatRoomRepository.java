@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.ChatRoom;
+import com.example.demo.domain.chat.ChatRoom;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

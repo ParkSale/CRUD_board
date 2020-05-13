@@ -47,9 +47,11 @@ public class PostController {
         model.addAttribute("posts",board);
         if(user == null){
             model.addAttribute("userName","");
+            model.addAttribute("userId",0);
         }
         else{
             model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
         }
         return "board/lists";
     }
@@ -61,9 +63,11 @@ public class PostController {
         Users user = usersService.findByEmail(email);
         if(user == null){
             model.addAttribute("userName","");
+            model.addAttribute("userId",0);
         }
         else{
             model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
         }
         PostForm postForm = new PostForm();
         postForm.setUser(user);
@@ -105,9 +109,11 @@ public class PostController {
         model.addAttribute("comments",list);
         if(user == null){
             model.addAttribute("userName","");
+            model.addAttribute("userId",0);
         }
         else{
             model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
         }
         return "board/read";
     }
@@ -128,6 +134,8 @@ public class PostController {
         postForm.setTitle(post.getTitle());
         postForm.setFileName(post.getFileName());
         model.addAttribute("post",postForm);
+        model.addAttribute("userName",user.getName());
+        model.addAttribute("userId",user.getId());
         return "board/edit";
     }
 
@@ -161,9 +169,11 @@ public class PostController {
         Users user = usersService.findByEmail(email);
         if(user == null){
             model.addAttribute("userName","");
+            model.addAttribute("userId",0);
         }
         else{
             model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
         }
         PageRequest pageRequest = PageRequest.of(page-1,10,Sort.Direction.DESC,"id");
         if(type.equals("title")){

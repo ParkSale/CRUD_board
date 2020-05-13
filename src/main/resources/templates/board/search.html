@@ -18,6 +18,7 @@
             </button>
             <a class="navbar-brand" href="/board/lists/1">전체목록</a>
             <a class="navbar-brand" href="/chat">메시지</a>
+            <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form navbar-right" method = "get" action = /posts/search/1>
@@ -54,7 +55,9 @@
             <td>
                 <a th:text="${post.title}" th:href = "@{/posts/read/{id} (id = ${post.id})}"></a>
             </td>
-            <td th:text="${post.user.name}"></td>
+            <td>
+                <a th:text="${post.user.name}" th:href = "@{/users/myPage/{id} (id = ${post.user.id})}"></a>
+            </td>
             <td th:text="${post.viewCnt}"></td>
             <td th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         </tr>
@@ -85,7 +88,18 @@
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script>
+<script th:inline = "javascript">
+    /* <![CDATA[*/
+    var id = /*[[${userId}]]*/;
+    /* ]]> */
+    function mypage(){
+        if(id == 0){
+            alert("로그인 후 이용해주세요");
+        }
+        else{
+            window.location.href = "/users/myPage/" + id;
+        }
+    }
     function logout(){
         $("#pop").modal();
         document.getElementById("y").onclick = function(){
@@ -104,6 +118,9 @@
         param = document.location.href.split('?')[1];
         page = parseInt(document.location.href.split('/')[5]) - 1;
         location.replace("/posts/search/" + page + '?' + param);
+    }
+    function goUserPage(e){
+        window.location.href = "/users/myPage/" + e;
     }
 </script>
 </body>

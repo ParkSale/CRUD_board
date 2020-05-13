@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.controller.UserForm;
-import com.example.demo.domain.ChatMessage;
 import com.example.demo.domain.Users;
 import com.example.demo.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -54,12 +54,16 @@ public class UsersService implements UserDetailsService {
     private Collection<? extends GrantedAuthority> authorities() {
         return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
-
+    @Transactional(readOnly = true)
     public Users findByEmail(String email) {
         return usersRepository.findUsersByEmail(email);
     }
-
+    @Transactional(readOnly = true)
     public List<String> findNameByContaining(String receiver) {
         return usersRepository.findNameByContaining(receiver);
+    }
+    @Transactional(readOnly = true)
+    public Optional<Users> findById(Long id) {
+        return usersRepository.findById(id);
     }
 }

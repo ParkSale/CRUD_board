@@ -1,12 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.ChatRoom;
-import com.example.demo.domain.ChatRoomJoin;
+import com.example.demo.domain.chat.ChatRoom;
+import com.example.demo.domain.chat.ChatRoomJoin;
 import com.example.demo.domain.Users;
 import com.example.demo.repository.ChatRoomJoinRepository;
 import com.example.demo.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,10 +19,12 @@ public class ChatRoomJoinService {
     private final ChatRoomJoinRepository chatRoomJoinRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UsersService usersService;
+    @Transactional(readOnly = true)
     public List<ChatRoomJoin> findByUser(Users user) {
         return chatRoomJoinRepository.findByUser(user);
     }
 
+    @Transactional(readOnly = true)
     public Long check(String user1,String user2){
         Users userFirst = usersService.findByName(user1);
         List<ChatRoomJoin> listFirst = chatRoomJoinRepository.findByUser(userFirst);
@@ -38,6 +41,7 @@ public class ChatRoomJoinService {
         }
         return 0L;
     }
+    @Transactional
     public Long newRoom(String user1, String user2) {
         Long ret = check(user1,user2);
         if(ret != 0){
@@ -57,19 +61,29 @@ public class ChatRoomJoinService {
         }
         return newChatRoom.getId();
     }
-
+    @Transactional
     public void createRoom(String user, ChatRoom chatRoom){
         ChatRoomJoin chatRoomJoin = new ChatRoomJoin();
         chatRoomJoin.setChatRoom(chatRoom);
         chatRoomJoin.setUser(usersService.findByName(user));
         chatRoomJoinRepository.save(chatRoomJoin);
     }
-
+    @Transactional(readOnly = true)
     public List<ChatRoomJoin> findByChatRoom(ChatRoom chatRoom) {
         return chatRoomJoinRepository.findByChatRoom(chatRoom);
     }
-
+    @Transactional
     public void delete(ChatRoomJoin chatRoomJoin) {
         chatRoomJoinRepository.delete(chatRoomJoin);
+    }
+
+    public String findAnotherUser(ChatRoom chatRoom, String name) {
+        List<ChatRoomJoin> chatRoomJoins = findByChatRoom(chatRoom);
+        for(ChatRoomJoin chatRoomJoin : chatRoomJoins){
+            if(name.equals(chatRoomJoin.getUser().getName()) ==false){
+                return chatRoomJoin.getUser().getName();
+            }
+        }
+        return name;
     }
 }

@@ -24,7 +24,7 @@ public class PostsService {
     public void save(Posts post) {
         postsRepository.save(post);
     }
-
+    @Transactional(readOnly = true)
     public Posts findOne(Long postId) {
         return postsRepository.findPostsById(postId);
     }
@@ -45,19 +45,19 @@ public class PostsService {
     public void readPost(Posts post) {
         post.setViewCnt(post.getViewCnt() + 1);
     }
-
+    @Transactional(readOnly = true)
     public Page<Posts> getPage(PageRequest pageRequest) {
         return postsRepository.findAll(pageRequest);
     }
-
+    @Transactional(readOnly = true)
     public Page<Posts> getPageByTitle(String str, PageRequest pageRequest) {
         return postsRepository.findByTitleContaining(str,pageRequest);
     }
-
+    @Transactional(readOnly = true)
     public Page<Posts> getPageByContent(String str, PageRequest pageRequest) {
         return postsRepository.findByContentContaining(str,pageRequest);
     }
-
+    @Transactional(readOnly = true)
     public Page<Posts> getPageByUsers(Users user, PageRequest pageRequest) {
         return postsRepository.findByUser(user,pageRequest);
     }

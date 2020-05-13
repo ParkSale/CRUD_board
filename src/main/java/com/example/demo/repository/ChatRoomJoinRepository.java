@@ -1,11 +1,9 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.ChatRoom;
-import com.example.demo.domain.ChatRoomJoin;
+import com.example.demo.domain.chat.ChatRoom;
+import com.example.demo.domain.chat.ChatRoomJoin;
 import com.example.demo.domain.Users;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

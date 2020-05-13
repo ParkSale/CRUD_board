@@ -1,5 +1,6 @@
-package com.example.demo.domain;
+package com.example.demo.domain.chat;
 
+import com.example.demo.domain.Users;
 import lombok.Getter;
 import lombok.Setter;
 

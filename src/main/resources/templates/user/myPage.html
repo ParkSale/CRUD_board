@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
+    <title>박세일의 CRUD게시판 프로젝트</title>
+    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
+
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/board/lists/1">게시판</a>
+            <a class="navbar-brand" href="/chat">메시지</a>
+            <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <br><br><br>
+    <div class="row">
+        <div class="col-sm-9 col-md-10 main">
+            <h1 class="sr-only" th:text = "${user.id}" id = "userId"></h1>
+            <button class="btn btn-primary pull-right" th:if="${follow} == -1" onclick = "javascript:fol($('#userId').text())">팔로우</button>
+            <button class="btn btn-default pull-right" th:if="${follow} == 1" onclick = "javascript:unfol($('#userId').text())">팔로잉</button>
+            <button class="btn btn-default pull-right" th:if="${follow} == 0">My Page</button>
+            <h1 class="page-header" th:text = "${user.name}" id = "name"></h1>
+            <h1 class="page-header">요약</h1>
+            <div class="row placeholders">
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <h4>작성한 게시글 수</h4>
+                    <a th:text = "${posts.size()}" onclick = "javascript:gesigle()"></a>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <h4>작성한 댓글 수</h4>
+                    <a th:text = "${comments}" onclick = "javascript:daetgle()"></a>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <h4>팔로잉</h4>
+                    <a th:text = "${following}" onclick = "javascript:getFollowing()"></a>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <h4>팔로워</h4>
+                    <a th:text = "${follower}" onclick = "javascript:getFollower()"></a>
+                </div>
+            </div>
+            <h2 class="sub-header" id = "boardHeader">작성한 게시글</h2>
+            <div class="table-responsive">
+                <table class="table table-striped" id = "board">
+                    <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>조회수</th>
+                        <th>작성시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${posts}">
+                        <td th:text="${post.id}"></td>
+                        <td>
+                            <a th:text="${post.user.name}" th:href = "@{/users/myPage/{id} (id = ${post.user.id})}"></a>
+                        </td>
+                        <td th:text="${post.user.name}"></td>
+                        <td th:text="${post.viewCnt}"></td>
+                        <td th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uf" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                팔로우를 끊으시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "uf_y">예</button>
+                <button type="button" class="btn btn-default" id = "uf_n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="f" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                팔로우 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "f_y">예</button>
+                <button type="button" class="btn btn-default" id = "f_n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="pop" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">알림!</h4>
+            </div>
+            <div class="modal-body">
+                로그아웃 하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id = "y">예</button>
+                <button type="button" class="btn btn-default" id = "n">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script th:inline = "javascript">
+    /* <![CDATA[*/
+    var id = /*[[${userId}]]*/;
+    var userId = /*[[${user.id}]]*/;
+    /* ]]> */
+    function mypage(){
+        if(id == 0){
+            alert("로그인 후 이용해주세요");
+        }
+        else{
+            window.location.href = "/users/myPage/" + id;
+        }
+    }
+    function logout(){
+        $("#pop").modal();
+        document.getElementById("y").onclick = function(){
+            window.location.href="/logout";
+        }
+        document.getElementById("n").onclick = function(){
+            $("#pop").modal("hide");
+        }
+    }
+    function gesigle(){
+        $.ajax({
+            type:'GET',
+            url: '/users/getPosts',
+            data : {name : $('#name').text()},
+            dataType : 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function(e){
+            boardHeader = document.getElementById("boardHeader");
+            boardHeader.innerText = "작성한 게시글";
+            board = document.getElementById("board");
+            board.innerHTML = "<thead> <tr> <th>번호</th> <th>제목</th> <th>작성자</th> <th>조회수</th> <th>작성시간</th> </tr> </thead> <tbody>";
+            for(var i =0; i<e.title.length; ++i){
+                board.innerHTML = " <tr> <td>" + (i+1) + "</td> <td><a href = /posts/read/" + e.id[i] + ">" + e.title[i] + "</a></td> <td>" + $('#name').text() + "</td> <td>" + e.viewCnt[i] + "</td> <td>" + dateParse(e.postTime[i]) +
+                "</td> </tr>" + board.innerHTML;
+            }
+            board.innerHTML += "</tbody>"
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+        })
+    }
+    function daetgle(){
+        $.ajax({
+            type:'GET',
+            url: '/users/getComments',
+            data : {name : $('#name').text()},
+            dataType : 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function(e){
+            boardHeader = document.getElementById("boardHeader");
+            boardHeader.innerText = "작성한 댓글";
+            board = document.getElementById("board");
+            board.innerHTML = "<thead> <tr> <th>번호</th><th>게시글 제목</th><th>댓글 내용</th> <th>작성자</th> <th>작성시간</th> </tr> </thead> <tbody>";
+            for(var i =0;i<e.comment.length;++i){
+                board.innerHTML = " <tr> <td>" + (i+1) + "</td><td>" + e.title[i] + "</td><td><a href = /posts/read/" + e.id[i] + ">" + e.comment[i] + "</a></td> <td>" + $('#name').text() + "</td> <td>" + dateParse(e.time[i]) +
+                    "</td> </tr>" + board.innerHTML;
+            }
+            board.innerHTML += "</tbody>"
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+        })
+    }
+    function dateParse(e){
+        str = e.substring(0,4) + "-" + e.substring(5,7) + "-" + e.substring(8,10) +" " + e.substring(11,19);
+        return str;
+    }
+    function follow(e1,e2){
+        $("#f").modal();
+        document.getElementById("f_y").onclick = function(){
+            $.ajax({
+                type: 'POST',
+                url: '/users/follow/' + e1 + '/' +e2,
+                dataType: 'text',
+                contentType: 'application/json; charset=utf-8',
+                async: false
+            }).done(function(){
+                window.location.href = "/users/myPage/" + userId;
+            }).fail(function(){
+                alert('잠시 후 다시 시도해주세요');
+            })
+        }
+        document.getElementById("f_n").onclick = function(){
+            $("#f").modal("hide");
+        }
+    }
+    function unfollow(e1,e2){
+        $("#uf").modal();
+        document.getElementById("uf_y").onclick = function(){
+            $.ajax({
+                type: 'POST',
+                url: '/users/unfollow/' + e1 + '/' +e2,
+                dataType: 'text',
+                contentType: 'application/json; charset=utf-8',
+                async: false
+            }).done(function(){
+                window.location.href = "/users/myPage/" + userId;
+            }).fail(function(){
+                alert('잠시 후 다시 시도해주세요');
+            })
+        }
+        document.getElementById("uf_n").onclick = function(){
+            $("#uf").modal("hide");
+        }
+    }
+    function getFollowing(){
+        $.ajax({
+            type:'GET',
+            url: '/users/getFollowings',
+            data : {name : $('#name').text()},
+            dataType : 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false
+        }).done(function(e){
+            boardHeader = document.getElementById("boardHeader");
+            boardHeader.innerText = "팔로잉";
+            board = document.getElementById("board");
+            if(userId == id){
+                board.innerHTML = "<thead> <tr> <th>번호</th><th>이름</th><th>상태</th></tr> </thead> <tbody>";
+            }
+            else{
+                board.innerHTML = "<thead> <tr> <th>번호</th><th>이름</th></tr> </thead> <tbody>";
+            }
+            for(var i =0;i<e.id.length;++i){
+                if(userId == id){
+                    board.innerHTML = " <tr> <td>" + (i+1) + "</td><td><a href = '#' onclick = 'javascript:goUserPage(" + e.id[i] + ")'>" + e.name[i] + "</a></td>"
+                        + "<td class = 'btn btn-default' onclick='javascript:unfol(" + e.id[i] + ")'>팔로잉</td> </tr>" + board.innerHTML;
+                }
+                else{
+                    board.innerHTML = " <tr> <td>" + (i+1) + "</td><td><a href = '#' onclick = 'javascript:goUserPage(" + e.id[i] + ")'>" + e.name[i] + "</a></td>" + board.innerHTML;
+                }
+            }
+            board.innerHTML += "</tbody>"
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+        })
+    }
+    function getFollower(){
+        $.ajax({
+            type:'GET',
+            url: '/users/getFollowers',
+            data : {name : $('#name').text()},
+            dataType : 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false
+        }).done(function(e){
+            boardHeader = document.getElementById("boardHeader");
+            boardHeader.innerText = "팔로워";
+            board = document.getElementById("board");
+            if(userId == id){
+                board.innerHTML = "<thead> <tr> <th>번호</th><th>이름</th><th>상태</th></tr> </thead> <tbody>";
+            }
+            else{
+                board.innerHTML = "<thead> <tr> <th>번호</th><th>이름</th></tr> </thead> <tbody>";
+            }
+            for(var i =0;i<e.id.length;++i){
+                if(userId == id){
+                    if(e.chk[i] == 1){
+                        //팔로잉
+                        board.innerHTML = " <tr> <td>" + (i+1) + "</td><td><a href = '#' onclick = 'javascript:goUserPage(" + e.id[i] + ")'>" + e.name[i] + "</a></td>" +
+                            "<td class = 'btn btn-default' onclick='javascript:unfol(" + e.id[i] + ")'>팔로잉</td> </tr>" + board.innerHTML;
+                    }
+                    else{
+                        //팔로우
+                        board.innerHTML = " <tr> <td>" + (i+1) + "</td><td><a href = '#' onclick = 'javascript:goUserPage(" + e.id[i] + ")'>" + e.name[i] + "</a></td>" +
+                            "<td class = 'btn btn-primary' onclick='javascript:fol(" + e.id[i] + ")'>팔로우</td> </tr>" + board.innerHTML;
+                    }
+                }
+                else{
+                    board.innerHTML = " <tr> <td>" + (i+1) + "</td><td><a href = '#' onclick = 'javascript:goUserPage(" + e.id[i] + ")'>" + e.name[i] + "</a></td>" +board.innerHTML;
+                }
+            }
+            board.innerHTML += "</tbody>"
+        }).fail(function(){
+            alert("잠시 후 시도해주세요");
+        })
+    }
+    function unfol(e){
+        unfollow(id,e);
+    }
+    function fol(e){
+        follow(id,e);
+    }
+    function goUserPage(e){
+        window.location.href = '/users/myPage/' + e;
+    }
+</script>
+</body>
+</html>

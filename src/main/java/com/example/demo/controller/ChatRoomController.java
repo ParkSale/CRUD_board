@@ -1,12 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.ChatMessage;
-import com.example.demo.domain.ChatRoom;
-import com.example.demo.domain.ChatRoomJoin;
+import com.example.demo.domain.chat.ChatMessage;
+import com.example.demo.domain.chat.ChatRoom;
+import com.example.demo.domain.chat.ChatRoomJoin;
 import com.example.demo.domain.Users;
-import com.example.demo.repository.ChatRoomRepository;
-import com.example.demo.repository.UsersRepository;
-import com.example.demo.service.ChatMessageService;
 import com.example.demo.service.ChatRoomJoinService;
 import com.example.demo.service.ChatRoomService;
 import com.example.demo.service.UsersService;
@@ -40,7 +37,7 @@ public class ChatRoomController {
             if(chatRoom.getMessages().size() != 0) {
                 ChatMessage lastMessage = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1);
                 chatRoomForm.setLastMessage(lastMessage.getMessage());
-                chatRoomForm.setWriter(lastMessage.getWriter().getName());
+                chatRoomForm.setWriter(chatRoomJoinService.findAnotherUser(chatRoom, user.getName()));
                 chatRoomForm.setTime(lastMessage.getTime());
                 chatRooms.add(chatRoomForm);
             }
@@ -49,6 +46,14 @@ public class ChatRoomController {
             }
         }
         model.addAttribute("chatRooms",chatRooms);
+        if(user == null){
+            model.addAttribute("userName","");
+            model.addAttribute("userId",0);
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
+        }
         return "chat/main";
     }
 
@@ -66,7 +71,18 @@ public class ChatRoomController {
         Optional<ChatRoom> opt = chatRoomService.findById(chatRoomId);
         ChatRoom chatRoom = opt.get();
         List<ChatMessage> messages = chatRoom.getMessages();
-        Collections.reverse(messages);
+        Collections.sort(messages, (t1, t2) -> {
+            if(t1.getId() > t2.getId()) return -1;
+            else return 1;
+        });
+        if(user == null){
+            model.addAttribute("userName","");
+            model.addAttribute("userId",0);
+        }
+        else{
+            model.addAttribute("userName",user.getName());
+            model.addAttribute("userId",user.getId());
+        }
         List<ChatRoomJoin> list = chatRoomJoinService.findByChatRoom(chatRoom);
         model.addAttribute( "messages",messages);
         model.addAttribute("nickname",user.getName());

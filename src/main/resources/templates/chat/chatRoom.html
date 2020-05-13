@@ -19,6 +19,7 @@
             </button>
             <a class="navbar-brand" href="/board/lists/1">게시판</a>
             <a class="navbar-brand" href="/chat">메시지</a>
+            <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
@@ -56,9 +57,8 @@
                             <div class='col-lg-12'>
                                 <div class='media'>
                                     <div class='media-body'>
-                                        <h4 class='media-heading' th:text="${message.writer.name}">
-
-                                        </h4>
+                                        <h4 class='media-heading' th:text="${message.writer.name}"></h4>
+                                        <h4 class="small pull-right" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
                                     </div>
                                     <p th:text="${message.message}"></p>
                                 </div>
@@ -109,6 +109,17 @@
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script th:inline = "javascript">
     /* <![CDATA[*/
+    var id = /*[[${userId}]]*/;
+    /* ]]> */
+    function mypage(){
+        if(id == 0){
+            alert("로그인 후 이용해주세요");
+        }
+        else{
+            window.location.href = "/users/myPage/" + id;
+        }
+    }
+    /* <![CDATA[*/
     var chatRoomId = /*[[${chatRoomId}]]*/;
     /* ]]> */
     /* <![CDATA[*/
@@ -149,9 +160,8 @@
     function showMessage(e) {
         space = document.getElementById("space");
         space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
-            e.sender + "</h4> </div> <p>" +
+            e.sender + "</h4><h4 class='small pull-right'>방금</h4> </div> <p>" +
             e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
-        space.scrollTop = space.scrollHeight;
     };
     window.onbeforeunload = function(e){
         disconnect();
