@@ -29,22 +29,7 @@ public class ChatRoomController {
         Users user = usersService.findByEmail(email);
         model.addAttribute("nickname",user.getName());
         List<ChatRoomJoin> chatRoomJoins = chatRoomJoinService.findByUser(user);
-        List<ChatRoomForm> chatRooms = new ArrayList<>();
-        for(ChatRoomJoin tmp : chatRoomJoins){
-            ChatRoomForm chatRoomForm = new ChatRoomForm();
-            ChatRoom chatRoom = tmp.getChatRoom();
-            chatRoomForm.setId(chatRoom.getId());
-            if(chatRoom.getMessages().size() != 0) {
-                ChatMessage lastMessage = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1);
-                chatRoomForm.setLastMessage(lastMessage.getMessage());
-                chatRoomForm.setWriter(chatRoomJoinService.findAnotherUser(chatRoom, user.getName()));
-                chatRoomForm.setTime(lastMessage.getTime());
-                chatRooms.add(chatRoomForm);
-            }
-            else{
-                chatRoomJoinService.delete(tmp);
-            }
-        }
+        List<ChatRoomForm> chatRooms = chatRoomService.setting(chatRoomJoins,user);
         model.addAttribute("chatRooms",chatRooms);
         if(user == null){
             model.addAttribute("userName","");
