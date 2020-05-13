@@ -20,8 +20,14 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 7. ajax를 이용한 사용자 자동완성 검색기능
 
+8. 회원간 Follow기능
+
+9. MyPage
+
 # 예정
-1. myPage구현
+1. SNS처럼 Follower의 게시글만 보이는 기능 추가
+
+2. 전체적으로 디자인 이뻐보이게 수정
 
 # ERD(수정예정)
 
