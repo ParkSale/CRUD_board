@@ -71,7 +71,7 @@
                     <tr th:each="post : ${posts}">
                         <td th:text="${post.id}"></td>
                         <td>
-                            <a th:text="${post.user.name}" th:href = "@{/users/myPage/{id} (id = ${post.user.id})}"></a>
+                            <a th:text="${post.title}" th:href = "@{/users/myPage/{id} (id = ${post.user.id})}"></a>
                         </td>
                         <td th:text="${post.user.name}"></td>
                         <td th:text="${post.viewCnt}"></td>
