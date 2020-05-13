@@ -29,7 +29,18 @@ public class ChatRoomService {
             ChatRoom chatRoom = tmp.getChatRoom();
             chatRoomForm.setId(chatRoom.getId());
             if(chatRoom.getMessages().size() != 0) {
-                ChatMessage lastMessage = chatRoom.getMessages().get(chatRoom.getMessages().size() - 1);
+                Collections.sort(chatRoom.getMessages(), new Comparator<ChatMessage>() {
+                    @Override
+                    public int compare(ChatMessage c1, ChatMessage c2) {
+                        if(c1.getTime().isAfter(c2.getTime())){
+                            return -1;
+                        }
+                        else{
+                            return 1;
+                        }
+                    }
+                });
+                ChatMessage lastMessage = chatRoom.getMessages().get(0);
                 chatRoomForm.setLastMessage(lastMessage.getMessage());
                 chatRoomForm.setWriter(chatRoomJoinService.findAnotherUser(chatRoom, user.getName()));
                 chatRoomForm.setTime(lastMessage.getTime());
