@@ -18,7 +18,7 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 6. Stomp와 SockJS를 이용한 1:1 실시간 채팅
 
-7. ajax를 이용한 사용자 자동완성 검색기능
+7. ajax의 autoComplete 이용한 사용자 자동완성 검색기능
 
 8. 회원간 Follow기능
 
