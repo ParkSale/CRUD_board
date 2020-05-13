@@ -29,6 +29,6 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 2. 전체적으로 디자인 이뻐보이게 수정
 
-# ERD(수정예정)
+# ERD
 
-<img src="https://user-images.githubusercontent.com/34956785/81866631-7057c280-95aa-11ea-8284-ddb4800418dd.PNG">
+<img src="https://user-images.githubusercontent.com/34956785/81866828-bc0a6c00-95aa-11ea-89ec-a29b6355f0de.PNG">
