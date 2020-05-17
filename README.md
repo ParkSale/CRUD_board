@@ -18,11 +18,17 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 6. Stomp와 SockJS를 이용한 1:1 실시간 채팅
 
-7. ajax를 이용한 사용자 자동완성 검색기능
+7. ajax의 autoComplete 이용한 사용자 자동완성 검색기능
+
+8. 회원간 Follow기능
+
+9. MyPage
 
 # 예정
-1. myPage구현
+1. SNS처럼 Follower의 게시글만 보이는 기능 추가
 
-# ERD(수정예정)
+2. 전체적으로 디자인 이뻐보이게 수정
 
-<img src="https://user-images.githubusercontent.com/34956785/80738566-33beac80-8b50-11ea-9b84-cb564cd5b9e6.PNG">
+# ERD
+
+<img src="https://user-images.githubusercontent.com/34956785/81866828-bc0a6c00-95aa-11ea-89ec-a29b6355f0de.PNG">
