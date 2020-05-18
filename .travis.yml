@@ -14,6 +14,23 @@ cache:
 
 script: "./gradlew clean build"
 
+before_deploy:
+  - zip -r crud-board
+  - mkdir -p deploy
+  - mv crud-board.zip deploy/crud-board.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+
+    bucket: crudimage
+    region: ap-northeast-2
+    skip-cleanup: true
+    acl: private
+    local_dir: deploy
+    wait-until-deployed: true
+
 notifications:
   email:
     recipients:
