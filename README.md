@@ -24,6 +24,8 @@ CRUD_게시판 with SpringBoot/BootStrap/SpringDataJpa
 
 9. MyPage
 
+10. Travis CI / AWS CodeDeploy 적용 완료
+
 # 예정
 1. SNS처럼 Follower의 게시글만 보이는 기능 추가
 
