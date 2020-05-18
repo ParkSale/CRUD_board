@@ -15,7 +15,7 @@ cache:
 script: "./gradlew clean build"
 
 before_deploy:
-  - zip -r crud-board
+  - zip -r crud-board *
   - mkdir -p deploy
   - mv crud-board.zip deploy/crud-board.zip
 
