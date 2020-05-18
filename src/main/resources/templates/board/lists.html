@@ -95,7 +95,12 @@
     var id = /*[[${userId}]]*/;
     /* ]]> */
     function mypage(){
-        window.location.href = "/users/myPage/" + id;
+        if(id == 0){
+            alert("로그인 후 이용해주세요");
+        }
+        else{
+            window.location.href = "/users/myPage/" + id;
+        }
     }
     function logout(){
         $("#pop").modal();
