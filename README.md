@@ -11,7 +11,7 @@
 # 완료
 - 회원가입 및 로그인
 
-- 게시글 작성/수정/삭제
+- 게시글 CRUD
 
 - 작성자 / 내용 / 제목별 검색기능
 
@@ -23,13 +23,13 @@
 
 - ajax의 autoComplete 이용한 사용자 자동완성 검색기능
 
-- 회원간 Follow기능
+- 회원간 Following / Follower
 
 - MyPage
 
-- Travis CI / AWS CodeDeploy 적용 완료
+- Travis CI / AWS CodeDeploy
 
-- Nginx 무중단배포 완료
+- Nginx 무중단배포
 
 # 사용도구
 
