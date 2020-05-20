@@ -6,7 +6,7 @@
 
 # ERD
 
-<img src="https://user-images.githubusercontent.com/34956785/81866828-bc0a6c00-95aa-11ea-89ec-a29b6355f0de.PNG">
+<img src="https://user-images.githubusercontent.com/34956785/82407162-6f8bc880-9aa3-11ea-8094-e63a6be89691.PNG">
 
 # 완료
 - 회원가입 및 로그인
@@ -47,5 +47,7 @@
 
 # 예정
 - SNS처럼 Follower의 게시글만 보이는 기능 추가
+
+- 소켓사용해서 실시간 알림 히스토리기능
 
 - 전체적으로 디자인 이뻐보이게 수정
