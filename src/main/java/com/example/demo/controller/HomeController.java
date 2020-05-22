@@ -42,4 +42,8 @@ public class HomeController {
         }
         return "home";
     }
+
+    @GetMapping("favicon.ico")
+    public void favicon(){ }
+
 }
