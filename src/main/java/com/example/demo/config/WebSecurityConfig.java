@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UsersService usersService;
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webjars/**","/favicon.ico");
+        web.ignoring().antMatchers("/webjars/**");
     }
 
     @Override
