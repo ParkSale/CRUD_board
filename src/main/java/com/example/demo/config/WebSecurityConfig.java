@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UsersService usersService;
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webjars/**");
+        web.ignoring().antMatchers("/webjars/**","/favicon.ico");
     }
 
     @Override
@@ -30,7 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/","/board/lists/**","/login","/home","/users/new","/posts/search/**","/posts/read/**","/profile").permitAll()
-                .antMatchers("/favicon.ico").access("ROLE_ANONYMOUS")
                 .antMatchers("/**").hasRole("USER")
                 .and()
                 .csrf().disable()		//post방식이 안받아짐 없으면
