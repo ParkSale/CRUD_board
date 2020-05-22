@@ -42,4 +42,8 @@ public class HomeController {
         }
         return "home";
     }
+    @RequestMapping("/favicon.ico")
+    public String favicon() {
+        return "forward:/favicon.ico";
+    }
 }
