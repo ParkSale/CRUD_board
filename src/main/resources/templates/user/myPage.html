@@ -210,7 +210,6 @@
                 url: '/users/follow/' + e1 + '/' +e2,
                 dataType: 'text',
                 contentType: 'application/json; charset=utf-8',
-                async: false
             }).done(function(){
                 window.location.href = "/users/myPage/" + userId;
             }).fail(function(){
@@ -229,7 +228,6 @@
                 url: '/users/unfollow/' + e1 + '/' +e2,
                 dataType: 'text',
                 contentType: 'application/json; charset=utf-8',
-                async: false
             }).done(function(){
                 window.location.href = "/users/myPage/" + userId;
             }).fail(function(){
@@ -247,7 +245,6 @@
             data : {name : $('#name').text()},
             dataType : 'json',
             contentType: 'application/json; charset=utf-8',
-            async: false
         }).done(function(e){
             boardHeader = document.getElementById("boardHeader");
             boardHeader.innerText = "팔로잉";
@@ -279,7 +276,6 @@
             data : {name : $('#name').text()},
             dataType : 'json',
             contentType: 'application/json; charset=utf-8',
-            async: false
         }).done(function(e){
             boardHeader = document.getElementById("boardHeader");
             boardHeader.innerText = "팔로워";
