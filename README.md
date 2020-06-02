@@ -4,6 +4,8 @@
 
 진행현황 : https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20%EC%8B%9C%EB%A6%AC%EC%A6%88
 
+           https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785
+
 # ERD
 
 <img src="https://user-images.githubusercontent.com/34956785/82407162-6f8bc880-9aa3-11ea-8094-e63a6be89691.PNG">
