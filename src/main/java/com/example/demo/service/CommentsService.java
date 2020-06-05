@@ -18,6 +18,7 @@ import java.util.Optional;
 public class CommentsService {
     private final CommentRepository commentRepository;
     private final PostsService postsService;
+    private final NoticeService noticeService;
     @Transactional
     public void addComment(Long id, CommentForm commentForm) {
         Comments comments = new Comments();
@@ -27,5 +28,7 @@ public class CommentsService {
         comments.setComment(commentForm.getComment());
         comments.setRegisterTime(LocalDateTime.now());
         commentRepository.save(comments);
+        noticeService.addCommentNotice(post.getId(), post.getUser(), commentForm.getUser(), comments.getRegisterTime());
     }
+
 }

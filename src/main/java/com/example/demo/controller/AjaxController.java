@@ -1,19 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Comments;
-import com.example.demo.domain.Follow;
-import com.example.demo.domain.Posts;
-import com.example.demo.domain.Users;
+import com.example.demo.domain.*;
 import com.example.demo.service.FollowService;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -100,6 +94,25 @@ public class AjaxController {
         map.put("id",idList);
         map.put("name",nameList);
         map.put("chk",chkList);
+        return map;
+    }
+
+    @GetMapping("/users/notice")
+    public Map<String,Object> getNotice(String name){
+        Map<String,Object> map = new HashMap<>();
+        Users user = usersService.findByName(name);
+        List<String> contents = new ArrayList<>();
+        List<String> links = new ArrayList<>();
+        List<LocalDateTime> times = new ArrayList<>();
+        List<Notice> notices = user.getNotices();
+        for(Notice notice : notices){
+            contents.add(notice.getContent());
+            links.add(notice.getLink());
+            times.add(notice.getTime());
+        }
+        map.put("content",contents);
+        map.put("link",links);
+        map.put("time",times);
         return map;
     }
 }

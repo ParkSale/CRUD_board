@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -14,6 +15,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FollowService {
     private final FollowRepository followRepository;
+    private final NoticeService noticeService;
     public int check(Users user1, Users user2) {
         //user2가 user1을 팔로우 했는가?
         if(user1.equals(user2)){
@@ -32,10 +34,11 @@ public class FollowService {
         follow.setFollower(user2);
         follow.setFollowing(user1);
         followRepository.save(follow);
+        noticeService.addFollowNotice(user1,user2);
     }
     public void unfollow(Users user1, Users user2) {
         //user1이 user2를 언팔로우
-        Set<Follow> follows = user1.getFollowings();
+        List<Follow> follows = user1.getFollowings();
         for(Follow follow : follows){
             if(follow.getFollower().equals(user2)){
                 follows.remove(follow);

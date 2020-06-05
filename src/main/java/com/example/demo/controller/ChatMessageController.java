@@ -12,7 +12,7 @@ public class ChatMessageController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatMessageService chatMessageService;
     @MessageMapping("/chat/send")
-    public void sendMsg(ChatMessageForm message) throws Exception {
+    public void sendMsg(ChatMessageForm message) {
         String receiver = message.getReceiver();
         chatMessageService.save(message);
         simpMessagingTemplate.convertAndSend("/topic/" + receiver,message);

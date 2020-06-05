@@ -70,6 +70,7 @@ public class UserController {
         model.addAttribute("follower",pageUser.get().getFollowers().size());
         model.addAttribute("following",pageUser.get().getFollowings().size());
         model.addAttribute("userId",user.getId());
+        model.addAttribute("userName",user.getName());
         return "user/myPage";
     }
 

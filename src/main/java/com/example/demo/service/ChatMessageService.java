@@ -15,6 +15,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final UsersService usersService;
     private final ChatRoomService chatRoomService;
+    private final NoticeService noticeService;
     @Transactional
     public void save(ChatMessageForm message) {
         ChatMessage chatMessage = new ChatMessage();
@@ -23,5 +24,6 @@ public class ChatMessageService {
         chatMessage.setWriter(usersService.findByName(message.getSender()));
         chatMessage.setChatRoom(chatRoomService.findById(message.getChatRoomId()).get());
         chatMessageRepository.save(chatMessage);
+        noticeService.addMessageNotice(chatMessage.getChatRoom(),chatMessage.getWriter(), message.getReceiver(),chatMessage.getTime());
     }
 }

@@ -20,6 +20,18 @@
             <a class="navbar-brand" href="/board/lists/1">게시판</a>
             <a class="navbar-brand" href="/chat">메시지</a>
             <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" onclick = "javascript:notice()">
+                        <span class="label label-pill label-danger count"></span>
+                        알림
+                    </a>
+                    <ul id="noticeList" class="dropdown-menu" style="overflow-y : auto; width : 300px; height : 300px">
+
+                    </ul>
+                </li>
+
+            </ul>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
@@ -29,6 +41,9 @@
 
 <div class="container">
     <br><br><br>
+    <div class="alert alert-success" id="comeMessage" style="display : none">
+        <strong>새로운 알림이 도착했습니다!</strong>
+    </div>
     <div class="row">
         <div class="col-sm-9 col-md-10 main">
             <h1 class="sr-only" th:text = "${user.id}" id = "userId"></h1>
@@ -133,11 +148,14 @@
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script th:inline = "javascript">
     /* <![CDATA[*/
     var id = /*[[${userId}]]*/;
     var userId = /*[[${user.id}]]*/;
+    var nickname = /*[[${userName}]]*/;
     /* ]]> */
     function mypage(){
         if(id == 0){
@@ -316,6 +334,62 @@
     }
     function goUserPage(e){
         window.location.href = '/users/myPage/' + e;
+    }
+    var stompClient = null;
+    connect();
+    function connect() {
+        if(nickname != ""){
+            var socket = new SockJS('/chat');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function () {
+                stompClient.subscribe('/topic/' + nickname, function (e) {
+                    alertClosing('comeMessage',2000);
+                });
+            });
+        }
+    }
+    function alertClosing(selector, delay){
+        document.getElementById(selector).style.display = "block";
+        window.setTimeout(function(){
+            document.getElementById(selector).style.display = "none";
+        },delay);
+    }
+
+    function disconnect() {
+        if (stompClient != null) {
+            stompClient.disconnect();
+        }
+    }
+    window.onbeforeunload = function(e){
+        disconnect();
+    }
+    function notice(){
+        if(nickname == ""){
+            noticeList = document.getElementById("noticeList");
+            noticeList.innerHTML = "";
+        }
+        else {
+            $.ajax({
+                type:'GET',
+                url: '/users/notice',
+                data : {name : nickname},
+                dataType : 'json',
+                contentType: 'application/json; charset=utf-8',
+            }).done(function(e){
+                console.log(e);
+                noticeList = document.getElementById("noticeList");
+                noticeList.innerHTML = "";
+                for(var i= 0; i< e.link.length;++i){
+                    noticeList.innerHTML = "<li><strong>" + e.content[i] + "</strong><br><small>" + dateParse(e.time[i])+ "</small> <button class = 'btn btn-default' onclick=goLink('" +  e.link[i] + "');>이동</button></li><hr>" + noticeList.innerHTML;
+                }
+            }).fail(function(e){
+                alert("잠시 후 시도해주세요");
+            })
+        }
+
+    }
+    function goLink(e){
+        window.location.href = e;
     }
 </script>
 </body>

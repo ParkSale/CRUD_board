@@ -27,7 +27,9 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comments> comments;
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
-    private Set<Follow> followings = new HashSet<>();
+    private List<Follow> followings;
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
-    private Set<Follow> followers = new HashSet<>();
+    private List<Follow> followers;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notice> notices;
 }
