@@ -2,13 +2,13 @@
 
 # http://세일.웹.한국
 
-진행현황 : https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20%EC%8B%9C%EB%A6%AC%EC%A6%88
+진행현황 : [블로그](https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20%EC%8B%9C%EB%A6%AC%EC%A6%88)
 
-https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785
+[노션](https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785)
 
 # ERD
 
-<img src="https://user-images.githubusercontent.com/34956785/82407162-6f8bc880-9aa3-11ea-8094-e63a6be89691.PNG">
+<img src="https://user-images.githubusercontent.com/34956785/83882769-8efe4300-a77d-11ea-8140-cb845e2d20f1.PNG">
 
 # 완료
 - 회원가입 및 로그인
@@ -28,6 +28,8 @@ https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785
 - 회원간 Following / Follower
 
 - MyPage
+
+- 실시간 알림 히스토리기능
 
 - Travis CI / AWS CodeDeploy
 
@@ -49,8 +51,6 @@ https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785
 
 # 예정
 - SNS처럼 Follower의 게시글만 보이는 기능 추가
-
-- 소켓사용해서 실시간 알림 히스토리기능
 
 - 전체적으로 디자인 이뻐보이게 수정
 
