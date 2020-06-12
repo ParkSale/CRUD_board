@@ -3,15 +3,12 @@ package com.example.demo.service;
 import com.example.demo.controller.CommentForm;
 import com.example.demo.domain.Comments;
 import com.example.demo.domain.Posts;
-import com.example.demo.domain.Users;
 import com.example.demo.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

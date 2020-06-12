@@ -1,28 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
-    <title>박세일의 CRUD게시판 프로젝트</title>
-    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
 
-</head>
-
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/board/lists/1">게시판</a>
-            <a class="navbar-brand" href="/chat">메시지</a>
-        </div>
-    </div>
-</nav>
-<div class="container">
+<div class="container" layout:fragment="content">
     <br><br><br>
     <form class="form-signing" action="/users/new" th:object="${userForm}" th:method = "post">
         <h2 class="form-signing-heading">회원가입</h2>
@@ -42,8 +22,5 @@
     </form>
 
 </div> <!-- /container -->
-
-<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
-<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</body>
+<th:block th:replace="fragment/footer :: footerFragment"> </th:block>
 </html>

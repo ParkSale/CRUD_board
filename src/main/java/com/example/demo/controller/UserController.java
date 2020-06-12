@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Comments;
-import com.example.demo.domain.Follow;
 import com.example.demo.domain.Posts;
 import com.example.demo.domain.Users;
-import com.example.demo.domain.chat.ChatRoomJoin;
 import com.example.demo.service.FollowService;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +30,7 @@ public class UserController {
         model.addAttribute("userForm",new UserForm());
         model.addAttribute("email","");
         model.addAttribute("name","");
+        model.addAttribute("userName","");
         return "user/new";
     }
 

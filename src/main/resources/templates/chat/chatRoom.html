@@ -1,45 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
-    <title>박세일의 CRUD게시판 프로젝트</title>
-    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
 
-</head>
-
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/board/lists/1">게시판</a>
-            <a class="navbar-brand" href="/chat">메시지</a>
-            <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" onclick = "javascript:notice()">
-                        <span class="label label-pill label-danger count"></span>
-                        알림
-                    </a>
-                    <ul id="noticeList" class="dropdown-menu" style="overflow-y : auto; width : 300px; height : 300px">
-
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <a class="btn btn-warning pull-right" href = "javascript:logout()">로그아웃</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
+<div class="container" layout:fragment="content">
     <br><br><br>
     <div class="alert alert-success" id="successMessage" style="display : none">
         <strong>메세지 전송에 성공했습니다.</strong>
@@ -100,140 +63,139 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="pop" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">알림!</h4>
-            </div>
-            <div class="modal-body">
-                로그아웃 하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" id = "y">예</button>
-                <button type="button" class="btn btn-default" id = "n">아니오</button>
+
+    <div class="modal fade" id="pop" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">알림!</h4>
+                </div>
+                <div class="modal-body">
+                    로그아웃 하시겠습니까?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id = "y">예</button>
+                    <button type="button" class="btn btn-default" id = "n">아니오</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-</body>
-<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
-<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
-<script th:inline = "javascript">
-    /* <![CDATA[*/
-    var id = /*[[${userId}]]*/;
-    /* ]]> */
-    function mypage(){
-        if(id == 0){
-            alert("로그인 후 이용해주세요");
+<th:block layout:fragment="script">
+    <script th:inline = "javascript">
+        /* <![CDATA[*/
+        var id = /*[[${userId}]]*/;
+        /* ]]> */
+        function mypage(){
+            if(id == 0){
+                alert("로그인 후 이용해주세요");
+            }
+            else{
+                window.location.href = "/users/myPage/" + id;
+            }
         }
-        else{
-            window.location.href = "/users/myPage/" + id;
-        }
-    }
-    /* <![CDATA[*/
-    var chatRoomId = /*[[${chatRoomId}]]*/;
-    /* ]]> */
-    /* <![CDATA[*/
-    var nickname = /*[[${nickname}]]*/;
-    /* ]]> */
-    /* <![CDATA[*/
-    var receiver = /*[[${receiver}]]*/;
-    /* ]]> */
-    var stompClient = null;
-    var d = new Date();
-    connect();
+        /* <![CDATA[*/
+        var chatRoomId = /*[[${chatRoomId}]]*/;
+        /* ]]> */
+        /* <![CDATA[*/
+        var nickname = /*[[${nickname}]]*/;
+        /* ]]> */
+        /* <![CDATA[*/
+        var receiver = /*[[${receiver}]]*/;
+        /* ]]> */
+        var stompClient = null;
+        var d = new Date();
+        connect();
 
-    function connect() {
-        var socket = new SockJS('/chat');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function () {
-            stompClient.subscribe('/topic/' + nickname, function (e) {
-                if(e.body.toString() == "notice"){
-                    alertClosing('noticeCome',2000);
-                }
-                else{
-                    showMessage(JSON.parse(e.body));
-                    alertClosing('comeMessage',2000);
-                }
+        function connect() {
+            var socket = new SockJS('/chat');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function () {
+                stompClient.subscribe('/topic/' + nickname, function (e) {
+                    if(e.body.toString() == "notice"){
+                        alertClosing('noticeCome',2000);
+                    }
+                    else{
+                        showMessage(JSON.parse(e.body));
+                        alertClosing('comeMessage',2000);
+                    }
+                });
             });
-        });
-    }
-
-    function disconnect() {
-        if (stompClient !== null) {
-            stompClient.disconnect();
         }
-    }
 
-    function send() {
-        data = {'chatRoomId': chatRoomId, 'sender' :nickname, 'receiver': receiver,'message': $("#message").val()};
-        stompClient.send("/app/chat/send", {}, JSON.stringify(data));
-        showMessage(data);
-        $("#message").val('');
-        alertClosing('successMessage',2000);
-    }
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+        }
 
-    function showMessage(e) {
-        space = document.getElementById("space");
-        space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
-            e.sender + "</h4><h4 class='small pull-right'>방금</h4> </div> <p>" +
-            e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
-    };
-    window.onbeforeunload = function(e){
-        disconnect();
-    }
+        function send() {
+            data = {'chatRoomId': chatRoomId, 'sender' :nickname, 'receiver': receiver,'message': $("#message").val()};
+            stompClient.send("/app/chat/send", {}, JSON.stringify(data));
+            showMessage(data);
+            $("#message").val('');
+            alertClosing('successMessage',2000);
+        }
 
-    function alertClosing(selector, delay){
-        console.log(selector);
-        document.getElementById(selector).style.display = "block";
-        window.setTimeout(function(){
-            document.getElementById(selector).style.display = "none";
-        },delay);
-    }
-    function logout(){
-        $("#pop").modal();
-        document.getElementById("y").onclick = function(){
-            window.location.href="/logout";
+        function showMessage(e) {
+            space = document.getElementById("space");
+            space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
+                e.sender + "</h4><h4 class='small pull-right'>방금</h4> </div> <p>" +
+                e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
+        };
+        window.onbeforeunload = function(e){
+            disconnect();
         }
-        document.getElementById("n").onclick = function(){
-            $("#pop").modal("hide");
+
+        function alertClosing(selector, delay){
+            console.log(selector);
+            document.getElementById(selector).style.display = "block";
+            window.setTimeout(function(){
+                document.getElementById(selector).style.display = "none";
+            },delay);
         }
-    }
-    function notice(){
-        if(nickname == ""){
-            noticeList = document.getElementById("noticeList");
-            noticeList.innerHTML = "";
+        function logout(){
+            $("#pop").modal();
+            document.getElementById("y").onclick = function(){
+                window.location.href="/logout";
+            }
+            document.getElementById("n").onclick = function(){
+                $("#pop").modal("hide");
+            }
         }
-        else {
-            $.ajax({
-                type:'GET',
-                url: '/users/notice',
-                data : {name : nickname},
-                dataType : 'json',
-                contentType: 'application/json; charset=utf-8',
-            }).done(function(e){
-                console.log(e);
+        function notice(){
+            if(nickname == ""){
                 noticeList = document.getElementById("noticeList");
                 noticeList.innerHTML = "";
-                for(var i= 0; i< e.link.length;++i){
-                    noticeList.innerHTML = "<li><strong>" + e.content[i] + "</strong><br><small>" + dateParse(e.time[i])+ "</small> <button class = 'btn btn-default' onclick=goLink('" +  e.link[i] + "');>이동</button></li><hr>" + noticeList.innerHTML;
-                }
-            }).fail(function(e){
-                alert("잠시 후 시도해주세요");
-            })
-        }
+            }
+            else {
+                $.ajax({
+                    type:'GET',
+                    url: '/users/notice',
+                    data : {name : nickname},
+                    dataType : 'json',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function(e){
+                    console.log(e);
+                    noticeList = document.getElementById("noticeList");
+                    noticeList.innerHTML = "";
+                    for(var i= 0; i< e.link.length;++i){
+                        noticeList.innerHTML = "<li><strong>" + e.content[i] + "</strong><br><small>" + dateParse(e.time[i])+ "</small> <button class = 'btn btn-default' onclick=goLink('" +  e.link[i] + "');>이동</button></li><hr>" + noticeList.innerHTML;
+                    }
+                }).fail(function(e){
+                    alert("잠시 후 시도해주세요");
+                })
+            }
 
-    }
-    function dateParse(e){
-        str = e.substring(0,4) + "-" + e.substring(5,7) + "-" + e.substring(8,10) +" " + e.substring(11,19);
-        return str;
-    }
-    function goLink(e){
-        window.location.href = e;
-    }
-</script>
+        }
+        function dateParse(e){
+            str = e.substring(0,4) + "-" + e.substring(5,7) + "-" + e.substring(8,10) +" " + e.substring(11,19);
+            return str;
+        }
+        function goLink(e){
+            window.location.href = e;
+        }
+    </script>
+</th:block>
+
 </html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
+        <title>박세일의 CRUD게시판 프로젝트</title>
+        <th:block  th:replace="fragments/config :: configFragment"></th:block>
+    </head>
+    <body>
+        <header th:replace="fragments/header :: headerFragment"></header>
+
+        <div layout:fragment="content"></div>
+    </body>
+    <footer th:replace="fragments/footer :: footerFragment"></footer>
+
+</html>

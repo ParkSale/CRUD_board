@@ -1,55 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset = UTF-8" />
-    <title>박세일의 CRUD게시판 프로젝트</title>
-    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
 
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/board/lists/1">전체목록</a>
-            <a class="navbar-brand" href="/chat">메시지</a>
-            <a class="navbar-brand" onclick = "javascript:mypage()">마이페이지</a>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" onclick = "javascript:notice()">
-                        <span class="label label-pill label-danger count"></span>
-                        알림
-                    </a>
-                    <ul id="noticeList" class="dropdown-menu" style="overflow-y : auto; width : 300px; height : 300px">
-
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <form class="navbar-form navbar-right" method = "get" action = /posts/search/1>
-                <select name = "type" class = "form-control-sm" style = "height : 33px; margin : 1px">
-                    <option value = "title" selected = "selected">제목</option>
-                    <option value = "content">내용</option>
-                    <option value = "author">글쓴이</option>
-                </select>
-                <div class="form-group">
-                    <input type="text" name = "str" placeholder="입력하세요" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">검색</button>
-                <a class="btn btn-warning" th:if="${userName.toString().length() == 0}" href = "/home">로그인</a>
-                <a class="btn btn-warning" th:if="${userName.toString().length() != 0}" href = "javascript:logout()">로그아웃</a>
-            </form>
-        </div>
-    </div>
-</nav>
-<div class = "container">
+<div class="container" layout:fragment="content">
     <br><br><br>
     <div class="alert alert-success" id="comeMessage" style="display : none">
         <strong>새로운 알림이 도착했습니다!</strong>
@@ -84,122 +37,119 @@
         <a th:if="${pagination.next}" href = "javascript:nextGo()" class = "btn btn-primary">next</a>
     </div>
     <a class ="btn btn-primary pull-right" href = "/board/newPost">글쓰기</a>
-</div>
-<div class="modal fade" id="pop" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">알림!</h4>
-            </div>
-            <div class="modal-body">
-                로그아웃 하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" id = "y">예</button>
-                <button type="button" class="btn btn-default" id = "n">아니오</button>
+    <div class="modal fade" id="pop" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">알림!</h4>
+                </div>
+                <div class="modal-body">
+                    로그아웃 하시겠습니까?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id = "y">예</button>
+                    <button type="button" class="btn btn-default" id = "n">아니오</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
-<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script th:inline = "javascript">
-    /* <![CDATA[*/
-    var id = /*[[${userId}]]*/;
-    /* ]]> */
-    function logout(){
-        $("#pop").modal();
-        document.getElementById("y").onclick = function(){
-            window.location.href="/logout";
-        }
-        document.getElementById("n").onclick = function(){
-            $("#pop").modal("hide");
-        }
-    }
-    function mypage(){
-        if(id == 0){
-            alert("로그인 후 이용해주세요");
-        }
-        else{
-            window.location.href = "/users/myPage/" + id;
-        }
-    }
-    /* <![CDATA[*/
-    var nickname = /*[[${userName}]]*/;
-    /* ]]> */
-    var stompClient = null;
-    connect();
-    function connect() {
-        if(nickname != ""){
-            var socket = new SockJS('/chat');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function () {
-                stompClient.subscribe('/topic/' + nickname, function (e) {
-                    alertClosing('comeMessage',2000);
-                });
-            });
-        }
-    }
-    function alertClosing(selector, delay){
-        document.getElementById(selector).style.display = "block";
-        window.setTimeout(function(){
-            document.getElementById(selector).style.display = "none";
-        },delay);
-    }
 
-    function disconnect() {
-        if (stompClient !== null) {
-            stompClient.disconnect();
+<th:block layout:fragment="script">
+    <script th:inline = "javascript">
+        /* <![CDATA[*/
+        var id = /*[[${userId}]]*/;
+        /* ]]> */
+        function logout(){
+            $("#pop").modal();
+            document.getElementById("y").onclick = function(){
+                window.location.href="/logout";
+            }
+            document.getElementById("n").onclick = function(){
+                $("#pop").modal("hide");
+            }
         }
-    }
-    window.onbeforeunload = function(e){
-        disconnect();
-    }
-    function nextGo(){
-        param = document.location.href.split('?')[1];
-        page = parseInt(document.location.href.split('/')[5]) + 1;
-        location.replace("/posts/search/" + page + '?' + param);
-    }
-    function prevGo(){
-        param = document.location.href.split('?')[1];
-        page = parseInt(document.location.href.split('/')[5]) - 1;
-        location.replace("/posts/search/" + page + '?' + param);
-    }
-    function notice(){
-        if(nickname == ""){
-            noticeList = document.getElementById("noticeList");
-            noticeList.innerHTML = "";
+        function mypage(){
+            if(id == 0){
+                alert("로그인 후 이용해주세요");
+            }
+            else{
+                window.location.href = "/users/myPage/" + id;
+            }
         }
-        else {
-            $.ajax({
-                type:'GET',
-                url: '/users/notice',
-                data : {name : nickname},
-                dataType : 'json',
-                contentType: 'application/json; charset=utf-8',
-            }).done(function(e){
-                console.log(e);
+        /* <![CDATA[*/
+        var nickname = /*[[${userName}]]*/;
+        /* ]]> */
+        var stompClient = null;
+        connect();
+        function connect() {
+            if(nickname != ""){
+                var socket = new SockJS('/chat');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function () {
+                    stompClient.subscribe('/topic/' + nickname, function (e) {
+                        alertClosing('comeMessage',2000);
+                    });
+                });
+            }
+        }
+        function alertClosing(selector, delay){
+            document.getElementById(selector).style.display = "block";
+            window.setTimeout(function(){
+                document.getElementById(selector).style.display = "none";
+            },delay);
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+        }
+        window.onbeforeunload = function(e){
+            disconnect();
+        }
+        function nextGo(){
+            param = document.location.href.split('?')[1];
+            page = parseInt(document.location.href.split('/')[5]) + 1;
+            location.replace("/posts/search/" + page + '?' + param);
+        }
+        function prevGo(){
+            param = document.location.href.split('?')[1];
+            page = parseInt(document.location.href.split('/')[5]) - 1;
+            location.replace("/posts/search/" + page + '?' + param);
+        }
+        function notice(){
+            if(nickname == ""){
                 noticeList = document.getElementById("noticeList");
                 noticeList.innerHTML = "";
-                for(var i= 0; i< e.link.length;++i){
-                    noticeList.innerHTML = "<li><strong>" + e.content[i] + "</strong><br><small>" + dateParse(e.time[i])+ "</small> <button class = 'btn btn-default' onclick=goLink('" +  e.link[i] + "');>이동</button></li><hr>" + noticeList.innerHTML;
-                }
-            }).fail(function(e){
-                alert("잠시 후 시도해주세요");
-            })
-        }
+            }
+            else {
+                $.ajax({
+                    type:'GET',
+                    url: '/users/notice',
+                    data : {name : nickname},
+                    dataType : 'json',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function(e){
+                    console.log(e);
+                    noticeList = document.getElementById("noticeList");
+                    noticeList.innerHTML = "";
+                    for(var i= 0; i< e.link.length;++i){
+                        noticeList.innerHTML = "<li><strong>" + e.content[i] + "</strong><br><small>" + dateParse(e.time[i])+ "</small> <button class = 'btn btn-default' onclick=goLink('" +  e.link[i] + "');>이동</button></li><hr>" + noticeList.innerHTML;
+                    }
+                }).fail(function(e){
+                    alert("잠시 후 시도해주세요");
+                })
+            }
 
-    }
-    function dateParse(e){
-        str = e.substring(0,4) + "-" + e.substring(5,7) + "-" + e.substring(8,10) +" " + e.substring(11,19);
-        return str;
-    }
-    function goLink(e){
-        window.location.href = e;
-    }
-</script>
-</body>
+        }
+        function dateParse(e){
+            str = e.substring(0,4) + "-" + e.substring(5,7) + "-" + e.substring(8,10) +" " + e.substring(11,19);
+            return str;
+        }
+        function goLink(e){
+            window.location.href = e;
+        }
+    </script>
+</th:block>
 </html>

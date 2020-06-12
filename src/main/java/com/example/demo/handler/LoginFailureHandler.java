@@ -1,7 +1,5 @@
 package com.example.demo.handler;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
