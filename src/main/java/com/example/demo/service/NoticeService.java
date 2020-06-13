@@ -18,41 +18,32 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final UsersService usersService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    @MessageMapping
+
     public void addCommentNotice(Long id, Users user, Users user1, LocalDateTime registerTime) {
         //user가 작성자인 id게시글에 user1이 registerTime에 댓글을 달았다.
-        Notice notice = new Notice();
-        notice.setType(Type.Comment);
-        notice.setUser(user);
-        notice.setContent(user1.getName() + "이 게시물에 댓글을 등록했습니다.");
-        notice.setLink("/posts/read/" + id);
-        notice.setTime(registerTime);
+        Notice notice = new Notice(Type.Comment,user,user1.getName() + "이 게시물에 댓글을 등록했습니다."
+        ,"/posts/read/" + id,registerTime);
         noticeRepository.save(notice);
-        simpMessagingTemplate.convertAndSend("/topic/" + user.getName(),"notice");
+        sendMessage(user.getName(),"notice");
     }
-    @MessageMapping
     public void addFollowNotice(Users user1, Users user2) {
         //user1이 user2를 팔로우
-        Notice notice = new Notice();
-        notice.setType(Type.Follow);
-        notice.setUser(user2);
-        notice.setContent(user1.getName() + "님이 팔로우하였습니다.");
-        notice.setLink("/users/myPage/" + user2.getId());
-        notice.setTime(LocalDateTime.now());
+        Notice notice = new Notice(Type.Follow, user2,user1.getName() + "님이 팔로우하였습니다."
+        ,"/users/myPage/" + user2.getId(),LocalDateTime.now());
         noticeRepository.save(notice);
-        simpMessagingTemplate.convertAndSend("/topic/" + user2.getName(),"notice");
+        sendMessage(user2.getName(),"notice");
+    }
+
+    public void addMessageNotice(ChatRoom chatRoom, Users sender, String receiver, LocalDateTime time) {
+        //sender가 receiver에게 chatRoom에서 time에 메세지 전송
+        Notice notice = new Notice(Type.Message,usersService.findByName(receiver),
+                sender.getName() + "님이 메세지를 보냈습니다.", "/personalChat/" + chatRoom.getId(),time);
+        noticeRepository.save(notice);
+        sendMessage(receiver,"message");
     }
 
     @MessageMapping
-    public void addMessageNotice(ChatRoom chatRoom, Users sender, String receiver, LocalDateTime time) {
-        //sender가 receiver에게 chatRoom에서 time에 메세지 전송
-        Notice notice = new Notice();
-        notice.setType(Type.Message);
-        notice.setUser(usersService.findByName(receiver));
-        notice.setTime(time);
-        notice.setContent(sender.getName() + "님이 메세지를 보냈습니다.");
-        notice.setLink("/personalChat/" + chatRoom.getId());
-        noticeRepository.save(notice);
-        simpMessagingTemplate.convertAndSend("/topic/" + receiver,"message");
+    public void sendMessage(String name, String message){
+        simpMessagingTemplate.convertAndSend("/topic/" + name, message);
     }
 }

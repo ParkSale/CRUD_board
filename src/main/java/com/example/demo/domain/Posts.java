@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
-@Entity
+@Getter
+@Entity @Setter
 @NoArgsConstructor
 public class Posts {
     @Id
@@ -32,4 +32,8 @@ public class Posts {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comments> comments = new ArrayList<>();
+
+    public void plusViewCnt() {
+        this.viewCnt++;
+    }
 }

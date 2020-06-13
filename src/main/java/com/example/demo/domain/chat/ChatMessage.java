@@ -27,4 +27,11 @@ public class ChatMessage {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users writer;
+
+    public ChatMessage(String message, LocalDateTime time, ChatRoom chatRoom, Users writer){
+        this.message=message;
+        this.time=time;
+        this.chatRoom=chatRoom;
+        this.writer=writer;
+    }
 }

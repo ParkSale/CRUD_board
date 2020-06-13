@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 public class Comments {
     @Id  @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +25,10 @@ public class Comments {
     private String comment;
     @Column(nullable = false)
     private LocalDateTime registerTime;
+    public Comments(Posts post, Users user, String comment, LocalDateTime registerTime){
+        this.post=post;
+        this.user=user;
+        this.comment=comment;
+        this.registerTime=registerTime;
+    }
 }

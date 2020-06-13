@@ -41,9 +41,7 @@ public class ChatRoomService {
                     }
                 });
                 ChatMessage lastMessage = chatRoom.getMessages().get(0);
-                chatRoomForm.setLastMessage(lastMessage.getMessage());
-                chatRoomForm.setWriter(chatRoomJoinService.findAnotherUser(chatRoom, user.getName()));
-                chatRoomForm.setTime(lastMessage.getTime());
+                chatRoomForm.makeChatRoomForm(lastMessage.getMessage(),chatRoomJoinService.findAnotherUser(chatRoom, user.getName()),lastMessage.getTime());
                 chatRooms.add(chatRoomForm);
             }
             else{

@@ -32,10 +32,7 @@ public class UsersService implements UserDetailsService {
         if(usersRepository.findUsersByName(userForm.getName()) != null){
             return "name";
         }
-        Users user = new Users();
-        user.setEmail(userForm.getEmail());
-        user.setName(userForm.getName());
-        user.setPassword(userForm.getPassword());
+        Users user = new Users(userForm.getEmail(),userForm.getPassword(),userForm.getName());
         usersRepository.save(user);
         return "success";
     }

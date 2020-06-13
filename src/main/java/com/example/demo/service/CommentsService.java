@@ -18,12 +18,8 @@ public class CommentsService {
     private final NoticeService noticeService;
     @Transactional
     public void addComment(Long id, CommentForm commentForm) {
-        Comments comments = new Comments();
         Posts post = postsService.findOne(id);
-        comments.setPost(post);
-        comments.setUser(commentForm.getUser());
-        comments.setComment(commentForm.getComment());
-        comments.setRegisterTime(LocalDateTime.now());
+        Comments comments = new Comments(post,commentForm.getUser(),commentForm.getComment(),LocalDateTime.now());
         commentRepository.save(comments);
         noticeService.addCommentNotice(post.getId(), post.getUser(), commentForm.getUser(), comments.getRegisterTime());
     }

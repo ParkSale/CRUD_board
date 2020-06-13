@@ -41,8 +41,9 @@ public class PostsService {
 
     @Transactional
     public void readPost(Posts post) {
-        post.setViewCnt(post.getViewCnt() + 1);
+        post.plusViewCnt();
     }
+
     @Transactional(readOnly = true)
     public Page<Posts> getPage(PageRequest pageRequest) {
         return postsRepository.findAll(pageRequest);

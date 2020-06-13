@@ -63,9 +63,7 @@ public class ChatRoomJoinService {
     }
     @Transactional
     public void createRoom(String user, ChatRoom chatRoom){
-        ChatRoomJoin chatRoomJoin = new ChatRoomJoin();
-        chatRoomJoin.setChatRoom(chatRoom);
-        chatRoomJoin.setUser(usersService.findByName(user));
+        ChatRoomJoin chatRoomJoin = new ChatRoomJoin(usersService.findByName(user),chatRoom);
         chatRoomJoinRepository.save(chatRoomJoin);
     }
     @Transactional(readOnly = true)

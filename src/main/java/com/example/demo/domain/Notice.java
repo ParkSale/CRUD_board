@@ -1,13 +1,15 @@
 package com.example.demo.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 public class Notice {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,4 +20,12 @@ public class Notice {
     @ManyToOne
     private Users user;
     private LocalDateTime time;
+
+    public Notice(Type type, Users user, String content, String link, LocalDateTime time){
+        this.type = type;
+        this.user=user;
+        this.content = content;
+        this.link=link;
+        this.time = time;
+    }
 }

@@ -18,11 +18,8 @@ public class ChatMessageService {
     private final NoticeService noticeService;
     @Transactional
     public void save(ChatMessageForm message) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setMessage(message.getMessage());
-        chatMessage.setTime(LocalDateTime.now());
-        chatMessage.setWriter(usersService.findByName(message.getSender()));
-        chatMessage.setChatRoom(chatRoomService.findById(message.getChatRoomId()).get());
+        ChatMessage chatMessage = new ChatMessage(message.getMessage(),LocalDateTime.now(),chatRoomService.findById(message.getChatRoomId()).get()
+        ,usersService.findByName(message.getSender()));
         chatMessageRepository.save(chatMessage);
         noticeService.addMessageNotice(chatMessage.getChatRoom(),chatMessage.getWriter(), message.getReceiver(),chatMessage.getTime());
     }
