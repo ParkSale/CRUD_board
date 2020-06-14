@@ -14,4 +14,12 @@ public class PostForm {
     private String content;
     private Users user;
     private String fileName;
+
+    public PostForm(Long id, String title,String content, Users user, String fileName){
+        this.id=id;
+        this.title=title;
+        this.content = content;
+        this.user=user;
+        this.fileName = fileName;
+    }
 }

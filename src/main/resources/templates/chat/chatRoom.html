@@ -35,10 +35,14 @@
                             <div class='col-lg-12'>
                                 <div class='media'>
                                     <div class='media-body'>
-                                        <h4 class='media-heading' th:text="${message.writer.name}"></h4>
-                                        <h4 class="small pull-right" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
+                                        <h4 class='media-heading pull-left' th:if="${message.writer.name.toString().equals(receiver.toString())}" th:text="${message.writer.name}"></h4>
+                                        <h4 class='media-heading pull-right' th:if="${!message.writer.name.toString().equals(receiver.toString())}" th:text="${message.writer.name}"></h4>
                                     </div>
-                                    <p th:text="${message.message}"></p>
+                                    <br>
+                                    <h4 class="small pull-right" th:if="${message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
+                                    <h4 class="small pull-left" th:if="${!message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
+                                    <p class="pull-left" th:text="${message.message}" th:if="${message.writer.name.toString().equals(receiver.toString())}"></p>
+                                    <p class="pull-right" th:text="${message.message}" th:if="${!message.writer.name.toString().equals(receiver.toString())}"></p>
                                 </div>
                             </div>
                             <hr>
@@ -116,7 +120,7 @@
                         alertClosing('noticeCome',2000);
                     }
                     else{
-                        showMessage(JSON.parse(e.body));
+                        showMessageLeft(JSON.parse(e.body));
                         alertClosing('comeMessage',2000);
                     }
                 });
@@ -132,15 +136,21 @@
         function send() {
             data = {'chatRoomId': chatRoomId, 'sender' :nickname, 'receiver': receiver,'message': $("#message").val()};
             stompClient.send("/app/chat/send", {}, JSON.stringify(data));
-            showMessage(data);
+            showMessageRight(data);
             $("#message").val('');
             alertClosing('successMessage',2000);
         }
 
-        function showMessage(e) {
+        function showMessageLeft(e) {
             space = document.getElementById("space");
-            space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading'>" +
-                e.sender + "</h4><h4 class='small pull-right'>방금</h4> </div> <p>" +
+            space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading pull-left'>" +
+                e.sender + "</h4><br><h4 class='small pull-right'>방금</h4> </div> <p class='pull-left'>" +
+                e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
+        };
+        function showMessageRight(e) {
+            space = document.getElementById("space");
+            space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading pull-right'>" +
+                e.sender + "</h4><br><h4 class='small pull-left'>방금</h4> </div> <p class='pull-right'>" +
                 e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
         };
         window.onbeforeunload = function(e){

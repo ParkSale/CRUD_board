@@ -36,4 +36,12 @@ public class Posts {
     public void plusViewCnt() {
         this.viewCnt++;
     }
+
+    public Posts(String title, String content,Users user, LocalDateTime postTime){
+        this.title=title;
+        this.content=content;
+        this.user=user;
+        this.postTime = postTime;
+        this.viewCnt= Long.valueOf(0);
+    }
 }

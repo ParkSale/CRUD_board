@@ -7,6 +7,7 @@ import com.example.demo.domain.Users;
 import com.example.demo.service.PostsService;
 import com.example.demo.service.S3Service;
 import com.example.demo.service.UsersService;
+import jdk.vm.ci.meta.Local;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -62,8 +63,7 @@ public class PostController {
         String email = (String) session.getAttribute("email");
         Users user = usersService.findByEmail(email);
         if(user == null){
-            model.addAttribute("userName","");
-            model.addAttribute("userId",0);
+            return "redirect:/";
         }
         else{
             model.addAttribute("userName",user.getName());
@@ -79,12 +79,7 @@ public class PostController {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         Users user = usersService.findByEmail(email);
-        Posts post = new Posts();
-        post.setTitle(postForm.getTitle());
-        post.setUser(user);
-        post.setContent(postForm.getContent());
-        post.setViewCnt((long) 0);
-        post.setPostTime(LocalDateTime.now());
+        Posts post = new Posts(postForm.getTitle(),postForm.getContent(),user,LocalDateTime.now());
         if(!multipartFile.isEmpty()){
             String fileName = s3Service.upload(multipartFile);
             post.setFileName(fileName);
@@ -127,12 +122,7 @@ public class PostController {
         if(post.getUser().getName().equals(user.getName()) == false){
             return "redirect:/board/lists/1";
         }
-        PostForm postForm = new PostForm();
-        postForm.setId(post.getId());
-        postForm.setUser(user);
-        postForm.setContent(post.getContent());
-        postForm.setTitle(post.getTitle());
-        postForm.setFileName(post.getFileName());
+        PostForm postForm = new PostForm(post.getId(),post.getTitle(),post.getContent(),user,post.getFileName());
         model.addAttribute("post",postForm);
         model.addAttribute("userName",user.getName());
         model.addAttribute("userId",user.getId());
