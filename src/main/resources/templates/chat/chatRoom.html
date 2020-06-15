@@ -39,10 +39,11 @@
                                         <h4 class='media-heading pull-right' th:if="${!message.writer.name.toString().equals(receiver.toString())}" th:text="${message.writer.name}"></h4>
                                     </div>
                                     <br>
-                                    <h4 class="small pull-right" th:if="${message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
-                                    <h4 class="small pull-left" th:if="${!message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
                                     <p class="pull-left" th:text="${message.message}" th:if="${message.writer.name.toString().equals(receiver.toString())}"></p>
+                                    <h4 class="small pull-left" th:if="${message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
                                     <p class="pull-right" th:text="${message.message}" th:if="${!message.writer.name.toString().equals(receiver.toString())}"></p>
+                                    <h4 class="small pull-right" th:if="${!message.writer.name.toString().equals(receiver.toString())}" th:text="${#temporals.format(message.time, 'yyyy-MM-dd HH:mm:ss')}"></h4>
+                                    <br>
                                 </div>
                             </div>
                             <hr>
@@ -144,14 +145,14 @@
         function showMessageLeft(e) {
             space = document.getElementById("space");
             space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading pull-left'>" +
-                e.sender + "</h4><br><h4 class='small pull-right'>방금</h4> </div> <p class='pull-left'>" +
-                e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
+                e.sender + "</h4></div><br> <p class='pull-left'>" +
+                e.message + "</p><h4 class='small pull-left'>방금</h4> <br> </div> </div> </div> <hr>" + space.innerHTML;
         };
         function showMessageRight(e) {
             space = document.getElementById("space");
             space.innerHTML = "<div class='row'> <div class='col-lg-12'> <div class='media'> <div class='media-body'> <h4 class='media-heading pull-right'>" +
-                e.sender + "</h4><br><h4 class='small pull-left'>방금</h4> </div> <p class='pull-right'>" +
-                e.message + "</p> </div> </div> </div> <hr>" + space.innerHTML;
+                e.sender + "</h4></div> <br><p class='pull-right'>" +
+                e.message + "</p> <h4 class='small pull-right'>방금</h4> <br></div> </div> </div> <hr>" + space.innerHTML;
         };
         window.onbeforeunload = function(e){
             disconnect();

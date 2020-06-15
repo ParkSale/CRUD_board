@@ -82,6 +82,9 @@ public class ChatRoomController {
         if(cnt >= 2){
             return "redirect:/chat";
         }
+        if(cnt == 0){
+            model.addAttribute("receiver","");
+        }
         return "chat/chatRoom";
     }
 }
