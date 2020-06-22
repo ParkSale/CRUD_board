@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.LoginUser;
+import com.example.demo.config.SessionUser;
 import com.example.demo.domain.Posts;
 import com.example.demo.domain.Users;
 import com.example.demo.service.FollowService;
@@ -26,7 +28,10 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final FollowService followService;
     @GetMapping("/users/new")
-    public String makeUserForm(Model model){
+    public String makeUserForm(Model model, @LoginUser SessionUser sessionUser){
+        if(sessionUser != null) {
+            return "redirect:/board/lists/1";
+        }
         model.addAttribute("userForm",new UserForm());
         model.addAttribute("email","");
         model.addAttribute("name","");
@@ -52,13 +57,11 @@ public class UserController {
     }
 
     @GetMapping("/users/myPage/{id}")
-    public String myPage(@PathVariable Long id, Model model, HttpServletRequest request){
+    public String myPage(@PathVariable Long id, Model model, @LoginUser SessionUser sessionUser){
         Optional<Users> pageUser = usersService.findById(id);
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        Users user = usersService.findByEmail(email);
         List<Posts> posts = pageUser.get().getPosts();
         Collections.reverse(posts);
+        Users user = usersService.findByName(sessionUser.getName());
         int chk = followService.check(pageUser.get(),user);
         model.addAttribute("follow",chk);
         model.addAttribute("user",pageUser.get());

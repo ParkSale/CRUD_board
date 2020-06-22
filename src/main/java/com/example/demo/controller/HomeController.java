@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.LoginUser;
+import com.example.demo.config.SessionUser;
 import com.example.demo.domain.Users;
 import com.example.demo.service.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +21,8 @@ public class HomeController {
         return "redirect:/board/lists/1";
     }
     @GetMapping("/home")
-    public String home(Model model, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        Users user = usersService.findByEmail(email);
-        if(user != null){
+    public String home(Model model, @LoginUser SessionUser sessionUser, HttpServletRequest request){
+        if(sessionUser != null){
             return "redirect:/board/lists/1";
         }
         UserForm userForm = new UserForm();

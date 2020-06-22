@@ -1,5 +1,8 @@
 package com.example.demo.handler;
 
+import com.example.demo.config.SessionUser;
+import com.example.demo.domain.Users;
+import com.example.demo.service.UsersService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,7 +29,7 @@ import java.io.IOException;
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private RequestCache requestCache = new HttpSessionRequestCache();
     private RedirectStrategy redirectStratgy = new DefaultRedirectStrategy();
-
+    private final UsersService usersService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -37,7 +40,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         Object principal = authentication.getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String email = userDetails.getUsername();
-        session.setAttribute("email",email);
+        Users users = usersService.findByEmail(email);
+        SessionUser sessionUser = new SessionUser(users.getId(),users.getEmail(),users.getName());
+        session.setAttribute("user",sessionUser);
         session.setMaxInactiveInterval(60*30);
         resultRedirectStrategy(request, response, authentication);
 

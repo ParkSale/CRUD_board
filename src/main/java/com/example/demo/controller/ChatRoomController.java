@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.LoginUser;
+import com.example.demo.config.SessionUser;
 import com.example.demo.domain.chat.ChatMessage;
 import com.example.demo.domain.chat.ChatRoom;
 import com.example.demo.domain.chat.ChatRoomJoin;
@@ -23,11 +25,9 @@ public class ChatRoomController {
     private final ChatRoomJoinService chatRoomJoinService;
     private final ChatRoomService chatRoomService;
     @GetMapping("/chat")
-    public String chatHome(HttpServletRequest request, Model model){
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        Users user = usersService.findByEmail(email);
-        model.addAttribute("nickname",user.getName());
+    public String chatHome(@LoginUser SessionUser sessionUser, Model model){
+        model.addAttribute("nickname",sessionUser.getName());
+        Users user = usersService.findByName(sessionUser.getName());
         List<ChatRoomJoin> chatRoomJoins = chatRoomJoinService.findByUser(user);
         List<ChatRoomForm> chatRooms = chatRoomService.setting(chatRoomJoins,user);
         model.addAttribute("chatRooms",chatRooms);
@@ -49,10 +49,7 @@ public class ChatRoomController {
     }
 
     @RequestMapping("/personalChat/{chatRoomId}")
-    public String goChat(@PathVariable("chatRoomId") Long chatRoomId,Model model,HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        Users user = usersService.findByEmail(email);
+    public String goChat(@PathVariable("chatRoomId") Long chatRoomId,Model model,@LoginUser SessionUser sessionUser){
         Optional<ChatRoom> opt = chatRoomService.findById(chatRoomId);
         ChatRoom chatRoom = opt.get();
         List<ChatMessage> messages = chatRoom.getMessages();
@@ -60,21 +57,21 @@ public class ChatRoomController {
             if(t1.getId() > t2.getId()) return -1;
             else return 1;
         });
-        if(user == null){
+        if(sessionUser == null){
             model.addAttribute("userName","");
             model.addAttribute("userId",0);
         }
         else{
-            model.addAttribute("userName",user.getName());
-            model.addAttribute("userId",user.getId());
+            model.addAttribute("userName",sessionUser.getName());
+            model.addAttribute("userId",sessionUser.getId());
         }
         List<ChatRoomJoin> list = chatRoomJoinService.findByChatRoom(chatRoom);
         model.addAttribute( "messages",messages);
-        model.addAttribute("nickname",user.getName());
+        model.addAttribute("nickname",sessionUser.getName());
         model.addAttribute("chatRoomId",chatRoomId);
         int cnt = 0;
         for(ChatRoomJoin join : list){
-            if(join.getUser().getName().equals(user.getName()) == false){
+            if(join.getUser().getName().equals(sessionUser.getName()) == false){
                 model.addAttribute("receiver",join.getUser().getName());
                 ++cnt;
             }
