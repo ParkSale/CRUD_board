@@ -3,6 +3,8 @@ package com.example.demo.stock.service;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -13,10 +15,12 @@ import java.util.*;
 public class CodeTransformService {
     private HashMap<String,String> map = new HashMap<>();
     private HashMap<String,String> reverseMap = new HashMap<>();
-    private String filePath = "src/main/resources/gg.xlsx";
 
     @PostConstruct
     private void mapInit() throws IOException {
+        Resource resource = new ClassPathResource("gg.xlsx");
+        String filePath = resource.getURI().getPath().substring(1);
+        System.out.println(filePath);
         FileInputStream fileInputStream = new FileInputStream(filePath);
 
         XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
