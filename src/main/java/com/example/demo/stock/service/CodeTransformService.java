@@ -19,7 +19,7 @@ public class CodeTransformService {
         try{
             FileReader fr;
             BufferedReader br;
-            String fileName = "/home/ec2-user/app/step2/gg.txt/gg.txt";
+            String fileName = "/home/ec2-user/app/step2/gg.txt";
             String line;
             fr = new FileReader(fileName);
             br = new BufferedReader(fr);
