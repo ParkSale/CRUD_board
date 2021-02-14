@@ -23,11 +23,12 @@ public class CodeTransformService {
     private void mapInit() throws IOException {
         Resource resource = new ClassPathResource("gg.txt");
         String filePath = resource.getURI().getPath().substring(1);
-        Path path = Paths.get(filePath);
-        List<String> lines = Files.readAllLines(path);
-        for(String line : lines){
-            String company = line.split("\t")[0];
-            String code = line.split("\t")[1];
+        File file = new File(filePath);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String str;
+        while((str = bufferedReader.readLine()) != null){
+            String company = str.split("\t")[0];
+            String code = str.split("\t")[1];
             map.put(company, code);
             reverseMap.put(code, company);
         }
