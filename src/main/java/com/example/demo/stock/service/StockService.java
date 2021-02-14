@@ -1,13 +1,21 @@
 package com.example.demo.stock.service;
 
+import com.example.demo.stock.domain.DayDataForm;
 import com.example.demo.stock.domain.StockForm;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,21 +24,29 @@ public class StockService {
     private final CodeTransformService codeTransformService;
 
 
-    /*public String getDayData(String name){
-        String code = codeTransformService.getCodeNumber(name);
+    public List<DayDataForm> getDayData(String code, int page){
         final String url = "http://fchart.stock.naver.com/sise.nhn?symbol=" + code + "&timeframe=day&count=100&requestType=0";
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
 
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
         String str = restTemplate.exchange(url, HttpMethod.GET,entity,String.class).getBody();
-        String[] list = str.split("item");
-        for(int i=1;i<list.length - 1;++i){
-            String[] t = list[i].split("[|]");
-            //System.out.println(t[0].substring(7) + " " + t[1] + " " + t[2] + " " + t[3] + " " + t[4] + " " + t[5].substring(0,t[5].length()-14));
+        String[] arr = str.split("item");
+        ArrayList<String> list = new ArrayList<>();
+        for(String s : arr) list.add(s);
+        List<DayDataForm> ret = new ArrayList<>();
+        Collections.reverse(list);
+        for(int i=1 + 10*(page-1);i<1 + 10*(page-1) + 10;++i){
+            String[] t = list.get(i).split("[|]");
+            DayDataForm dayDataForm = DayDataForm.builder()
+                                        .date(t[0].substring(7))
+                                        .startCost(t[1]).highCost(t[2]).lowCost(t[3]).endCost(t[4]).volume(t[5].substring(0,t[5].length()-14)).build();
+            ret.add(dayDataForm);
+
         }
-        return str;
-    }*/
+        Collections.reverse(ret);
+        return ret;
+    }
 
     public StockForm findInfo(String code) throws IOException {
         return makeStockForm(code);

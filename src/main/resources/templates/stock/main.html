@@ -73,16 +73,16 @@
                         <td>거래량</td>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                        <td>sit</td>
-                    </tr>
+                    <tbody id = "tableBody">
+
                     </tbody>
                 </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" onclick='prevPage()'>Previous</a></li>
+                        <li class="page-item"><a class="page-link" onclick='nextPage()'>Next</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -93,12 +93,45 @@
 <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+    code = null;
+    page = null;
     window.onload = function(){
         url = window.location.href;
         code = url.slice(-6);
         if(code == "/stock" || code == "stock?") code = "005930";
         graph = document.getElementById("graph");
         graph.innerHTML = "<img src= https://ssl.pstatic.net/imgfinance/chart/item/candle/day/" + code + ".png>";
+        page=1;
+        getDataByPage(1);
+    }
+    function prevPage(){
+        if(page == 1){
+            return;
+        }
+        page = page -1;
+        getDataByPage(page);
+    }
+    function nextPage(){
+        if(page == 9){
+            return;
+        }
+        page = page + 1;
+        getDataByPage(page);
+    }
+    function getDataByPage(page){
+        $.ajax({
+            type:'GET',
+            url: '/stock/dayData?page=' + page + '&code=' + code
+        }).done(function(e){
+            console.log(e);
+            tableElement = document.getElementById("tableBody");
+            tableElement.innerHTML = "";
+            for(var i=0;i<10;++i){
+                tableElement.innerHTML = "<tr> <td>" + e.data[i].date + "</td> <td>" + e.data[i].startCost + "</td> <td>" + e.data[i].highCost + "</td> <td>" + e.data[i].lowCost + "</td> <td>" + e.data[i].endCost + "</td> <td>" + e.data[i].volume + "</td> </tr>" + tableElement.innerHTML;
+            }
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+        })
     }
 
     $(function(){
