@@ -17,10 +17,9 @@ public class CodeTransformService {
     @PostConstruct
     private void mapInit() throws IOException {
         try{
-            String filePath = "/home/ec2-user/app/step2/gg.txt";
             FileReader fr;
             BufferedReader br;
-            String fileName = "gg.txt";
+            String fileName = "/home/ec2-user/app/step2/gg.txt/gg.txt";
             String line;
             fr = new FileReader(fileName);
             br = new BufferedReader(fr);
