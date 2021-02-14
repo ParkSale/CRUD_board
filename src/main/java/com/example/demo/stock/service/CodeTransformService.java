@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -18,27 +21,15 @@ public class CodeTransformService {
 
     @PostConstruct
     private void mapInit() throws IOException {
-        Resource resource = new ClassPathResource("gg.xlsx");
+        Resource resource = new ClassPathResource("gg.txt");
         String filePath = resource.getURI().getPath().substring(1);
-        System.out.println(filePath);
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
-        XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
-
-        Sheet sheet = workbook.getSheetAt(0);
-        Iterator<Row> rowItr = sheet.iterator();
-        while(rowItr.hasNext()){
-            Row row = rowItr.next();
-            if(row.getRowNum() == 0){
-                continue;
-            }
-            Iterator<Cell> cellItr = row.cellIterator();
-
-            Cell companyNameCell = cellItr.next();
-            Cell codeNumberCell = cellItr.next();
-
-            map.put(companyNameCell.getStringCellValue(), codeNumberCell.getStringCellValue());
-            reverseMap.put(codeNumberCell.getStringCellValue(), companyNameCell.getStringCellValue());
+        Path path = Paths.get(filePath);
+        List<String> lines = Files.readAllLines(path);
+        for(String line : lines){
+            String company = line.split("\t")[0];
+            String code = line.split("\t")[1];
+            map.put(company, code);
+            reverseMap.put(code, company);
         }
     }
 
