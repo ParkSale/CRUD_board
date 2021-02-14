@@ -1,111 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .ui-autocomplete {
+        max-height: 250px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+</style>
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="canonical" href="https://getbootstrap.com/docs/3.3/examples/dashboard/">
     <title>Sale's Stock Example</title>
-    <link href="css/styles.css" type="text/css"/>
-    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
-
+    <link rel='stylesheet' href='/webjars/bootstrap/3.3.7/css/bootstrap.min.css'>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <h3 class="navbar-header" style="color:rgb(6,193,231);">Sale's Stock Example</h3>
+            <div id="navbar" class="nav navbar-nav navbar-right">
+                <i class="navbar-form navbar-right">
+                    <input type="text" class="form-control navbar-form" id = "company" placeholder="Search...">
+                    <button class="btn btn-default" type="button" onclick=submitCompany()><i class="fas fa-search">검색</i></button>
+                </i>
+            </div>
+        </div>
+    </nav>
 </head>
-<body class="sb-nav-fixed">
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <div class="navbar-brand">주식 차트</div>
-    <!-- Navbar Search-->
-    <div class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-        <div class="input-group">
-            <input class="form-control" id = "company" type="text" placeholder="Search for..."  aria-describedby="basic-addon2" />
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" onclick=submitCompany()><i class="fas fa-search"></i></button>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-1 col-md-10 col-md-10 main">
+            <h1 class="page-header" th:text="*{form.getCompanyName()}"></h1>
+            <div class="row placeholders">
+                <div class="panel panel-primary col-xs-6 col-sm-3 placeholder">
+                    <div class="panel-heading">전일</div>
+                    <div class="panel-body" th:text="*{form.getPrevDay()}"></div>
+                </div>
+                <div class="panel panel-success col-xs-6 col-sm-3 placeholder">
+                    <div class="panel-heading">시가</div>
+                    <div class="panel-body" th:text="*{form.getStartCost()}"></div>
+                </div>
+                <div class="panel panel-info col-xs-6 col-sm-3 placeholder">
+                    <div class="panel-heading">고가</div>
+                    <div class="panel-body" th:text="*{form.getHighCost()}"></div>
+                </div>
+                <div class="panel panel-danger col-xs-6 col-sm-3 placeholder">
+                    <div class="panel-heading">저가</div>
+                    <div class="panel-body" th:text="*{form.getLowCost()}"></div>
+                </div>
+            </div>
+            <hr>
+            <h3>차트 그래프</h3>
+            <hr>
+            <div class="text-center" id = "graph"></div>
+            <h2 class="sub-header">일별 시세</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <td>날짜</td>
+                        <td>시가</td>
+                        <td>고가</td>
+                        <td>저가</td>
+                        <td>종가</td>
+                        <td>거래량</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1,001</td>
+                        <td>Lorem</td>
+                        <td>ipsum</td>
+                        <td>dolor</td>
+                        <td>sit</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <!-- Navbar-->
-</nav>
-<div>
-    <div>
-        <hr><hr>
-        <main>
-            <div class="container-fluid">
-                <h1 class="mt-4" th:text="*{form.getCompanyName()}"></h1>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active" th:text="*{form.getNowCost()}"></li>
-                </ol>
-                <div class="row">
-                    <div class="col-xl-3 col-md-6">
-                        <div class="card bg-primary text-white mb-4">
-                            <div class="card-body">전일</div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <div class="small text-white stretched-link" th:text="*{form.getPrevDay()}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="card bg-warning text-white mb-4">
-                            <div class="card-body">시가</div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <div class="small text-white stretched-link" th:text="*{form.getStartCost()}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="card bg-success text-white mb-4">
-                            <div class="card-body">고가</div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <div class="small text-white stretched-link"th:text="*{form.getHighCost()}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="card bg-danger text-white mb-4">
-                            <div class="card-body">저가</div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <div class="small text-white stretched-link" th:text="*{form.getLowCost()}"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center" id = "graph">
-                </div>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-table mr-1"></i>
-                        일별 시세
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <td>날짜</td>
-                                    <td>시가</td>
-                                    <td>고가</td>
-                                    <td>저가</td>
-                                    <td>종가</td>
-                                    <td>거래량</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
 </div>
-<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-<script type = "text/javascript" src = "assets/demo/datatables-demo.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     window.onload = function(){
         url = window.location.href;
