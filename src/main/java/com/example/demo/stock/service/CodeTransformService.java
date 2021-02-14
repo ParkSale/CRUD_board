@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -20,8 +17,29 @@ public class CodeTransformService {
     private HashMap<String,String> reverseMap = new HashMap<>();
 
     @PostConstruct
-    private void mapInit() throws IOException {
-        Resource resource = new ClassPathResource("gg.txt");
+    private void mapInit() {
+        try{
+            String filePath = "/home/ec2-user/app/step2/gg.txt";
+            FileReader fr;
+            BufferedReader br;
+            String fileName = "gg.txt";
+            String line;
+            fr = new FileReader(fileName);
+            br = new BufferedReader(fr);
+            while((line = br.readLine()) != null){
+                line = line.trim();
+                String company = line.split("\t")[0];
+                String code = line.split("\t")[1];
+                map.put(company, code);
+                reverseMap.put(code, company);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        finally{
+        }
+        /*Resource resource = new ClassPathResource("gg.txt");
         String filePath = resource.getURI().getPath().substring(1);
         File file = new File(filePath);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -31,7 +49,7 @@ public class CodeTransformService {
             String code = str.split("\t")[1];
             map.put(company, code);
             reverseMap.put(code, company);
-        }
+        }*/
     }
 
     public String getCompanyName(String code){
