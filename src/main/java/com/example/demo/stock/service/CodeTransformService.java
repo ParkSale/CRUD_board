@@ -16,7 +16,7 @@ public class CodeTransformService {
 
     @PostConstruct
     private void mapInit() throws IOException {
-        /*try{
+        try{
             String filePath = "/home/ec2-user/app/step2/gg.txt";
             FileReader fr;
             BufferedReader br;
@@ -36,8 +36,8 @@ public class CodeTransformService {
             System.out.println(e);
         }
         finally{
-        }*/
-        Resource resource = new ClassPathResource("gg.txt");
+        }
+        /*Resource resource = new ClassPathResource("gg.txt");
         String filePath = resource.getURI().getPath().substring(1);
         File file = new File(filePath);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -47,7 +47,7 @@ public class CodeTransformService {
             String code = str.split("\t")[1];
             map.put(company, code);
             reverseMap.put(code, company);
-        }
+        }*/
     }
 
     public String getCompanyName(String code){
