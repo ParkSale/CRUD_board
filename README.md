@@ -2,10 +2,6 @@
 
 # http://세일.웹.한국
 
-진행현황 : [블로그](https://salepark.tistory.com/category/SpringBoot%EB%A1%9C%20%EB%A7%8C%EB%93%9C%EB%8A%94%20%EC%8B%9C%EB%A6%AC%EC%A6%88)
-
-[노션](https://www.notion.so/salepark/SpringBoot-d858b8bae28444f6bf0772b9249a3785)
-
 # ERD
 
 <img src="https://user-images.githubusercontent.com/34956785/83882769-8efe4300-a77d-11ea-8140-cb845e2d20f1.PNG">
@@ -33,8 +29,6 @@
 
 - Travis CI / AWS CodeDeploy
 
-- Nginx 무중단배포
-
 # 사용도구
 
 - github
@@ -47,11 +41,7 @@
 
 - Travis
 
-- Nginx
-
 # 예정
 - SNS처럼 Follower의 게시글만 보이는 기능 추가
 
 - 전체적으로 디자인 이뻐보이게 수정
-
-- Nginx에 정적파일 올리기
