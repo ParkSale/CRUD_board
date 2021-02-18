@@ -1,5 +1,7 @@
 package com.example.demo.stock.controller;
 
+import com.example.demo.stock.domain.AccountForm;
+import com.example.demo.stock.domain.BalanceForm;
 import com.example.demo.stock.domain.DayDataForm;
 import com.example.demo.stock.domain.StockForm;
 import com.example.demo.stock.service.CodeTransformService;
@@ -47,6 +49,24 @@ public class StockController {
         Map<String,Object> map = new HashMap<>();
         List<DayDataForm> dayDataForms = stockService.getDayData(code, page);
         map.put("data",dayDataForms);
+        return map;
+    }
+
+    @GetMapping("/stock/accountSelect")
+    @ResponseBody
+    public Map<String, Object> getAccount(){
+        Map<String,Object> map = new HashMap<>();
+        AccountForm[] list = stockService.getAccountList();
+        map.put("accountList",list);
+        return map;
+    }
+
+    @GetMapping("/stock/getBalance")
+    @ResponseBody
+    public Map<String,Object> getBalance(@RequestParam String fintech_use_num){
+        Map<String,Object> map = new HashMap<>();
+        BalanceForm balanceForm = stockService.getBalance(fintech_use_num);
+        map.put("balance",balanceForm);
         return map;
     }
 }

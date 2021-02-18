@@ -60,7 +60,21 @@
             <hr>
             <h3>차트 그래프</h3>
             <hr>
-            <div class="text-center" id = "graph"></div>
+            <div class="row">
+                <div class="col-md-4" id = "graph"></div>
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 col-md-offset-4">
+                        <button class = "btn-primary">매도하기</button>
+                        <p></p>
+                        <button class = "btn-danger">매수하기</button><p></p>
+                        <button class = "btn-info" onclick="accountSelect()">계좌선택</button>
+                        <h3 id = "accountInfo">계좌 : </h3>
+                        <h3 id = "balanceInfo">잔액 : </h3>
+                        <button class = "btn-success">보유현황</button>
+                    </div>
+                </div>
+            </div>
             <h2 class="sub-header">일별 시세</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -84,6 +98,33 @@
                         <li class="page-item"><a class="page-link" onclick='nextPage()'>Next</a></li>
                     </ul>
                 </nav>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="pop" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">알림!</h4>
+                </div>
+                <div class="modal-body table-responsive">
+                    <table class="table table-striped" >
+                        <thead>
+                        <tr>
+                            <td>은행명</td>
+                            <td>별칭</td>
+                            <td>계좌번호</td>
+                            <td>선택</td>
+                        </tr>
+                        </thead>
+                        <tbody id = "accountList">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id = "exitModal">닫기</button>
+                </div>
             </div>
         </div>
     </div>
@@ -165,6 +206,51 @@
                 alert("잠시 후 시도해주세요");
             })
         }
+    }
+    var fintech_use_num;
+    var account_num;
+    function accountSelect(){
+        fintech_use_num = new Array();
+        account_num = new Array();
+        $.ajax({
+            type:'GET',
+            url: '/stock/accountSelect'
+        }).done(function (e){
+            accountList= document.getElementById("accountList");
+            accountList.innerHTML = "";
+            for(var i = 0; i<e.accountList.length;++i){
+                fintech_use_num[i] = e.accountList[i].fintech_use_num;
+                account_num[i] = e.accountList[i].account_num_masked;
+                accountList.innerHTML = "<tr> <td>" + e.accountList[i].bank_name + "</td> <td>" + e.accountList[i].account_alias + "</td> <td>" + e.accountList[i].account_num_masked +"</td> <td> <button class='btn btn-success' onclick='javascript:selectAccount(" + i + ")'></button></td></tr>" + accountList.innerHTML;
+            }
+            $("#pop").modal();
+            document.getElementById("exitModal").onclick = function(){
+                $("#pop").modal("hide");
+            }
+        }).fail(function (e){
+            alert("잠시 후 시도해주세요.")
+        })
+    }
+
+    function selectAccount(i){
+        accountInfo = document.getElementById("accountInfo");
+        balanceInfo = document.getElementById("balanceInfo");
+        $.ajax({
+            type:'GET',
+            url: '/stock/getBalance?fintech_use_num=' + fintech_use_num[i]
+        }).done(function(e){
+            console.log(e);
+            $("#pop").modal("hide");
+            accountInfo.innerText = "계좌번호 : " + account_num[i];
+            balanceInfo.innerText = "잔액 : " + e.balance.balance_amt + "원";
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+
+
+
+
+        })
+
     }
 </script>
 </body>

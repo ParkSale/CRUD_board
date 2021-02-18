@@ -1,7 +1,6 @@
 package com.example.demo.stock.service;
 
-import com.example.demo.stock.domain.DayDataForm;
-import com.example.demo.stock.domain.StockForm;
+import com.example.demo.stock.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,11 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,4 +70,39 @@ public class StockService {
         return stockForm;
     }
 
+    public AccountForm[] getAccountList() {
+        String url = "https://developers.kftc.or.kr/proxy/account/list";
+        String seqNo = "1100759890";
+        String include_cancel_yn="Y";
+        String sort_order = "D";
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAwNzU5ODkwIiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2MjEyNTE1NTYsImp0aSI6IjFkODVjNTJjLTA3MDMtNDgzNS1iYzYwLTNhNjQ0OTQ2NmFhNyJ9.wIVG_HCtq-5M9ZIpoUq42y4fVg3C0BugaPzWrp8WI30");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("user_seq_no",seqNo).queryParam("include_cancel_yn",include_cancel_yn).queryParam("sort_order",sort_order);
+        HttpEntity<AccountResponseForm> entity = new HttpEntity<>(httpHeaders);
+        AccountResponseForm accountResponseForm = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,entity,AccountResponseForm.class).getBody();
+        return accountResponseForm.getRes_list();
+    }
+
+    private int getRandomNumber(){
+        Random rand = new Random();
+        String rst = Integer.toString(rand.nextInt(8) + 1);
+        for(int i=0; i < 8; i++){
+            rst += Integer.toString(rand.nextInt(9));
+        }
+        return Integer.parseInt(rst);
+    }
+    public BalanceForm getBalance(String fintech_use_num) {
+        String url = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num";
+        String bank_tran_id = "T991637050U" + getRandomNumber();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+        String tran_dtime = format.format(System.currentTimeMillis());
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAwNzU5ODkwIiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2MjEyNTE1NTYsImp0aSI6IjFkODVjNTJjLTA3MDMtNDgzNS1iYzYwLTNhNjQ0OTQ2NmFhNyJ9.wIVG_HCtq-5M9ZIpoUq42y4fVg3C0BugaPzWrp8WI30");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("bank_tran_id",bank_tran_id).queryParam("fintech_use_num",fintech_use_num).queryParam("tran_dtime",tran_dtime);
+        HttpEntity<BalanceForm> entity = new HttpEntity<>(httpHeaders);
+        BalanceForm balanceForm = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,entity,BalanceForm.class).getBody();
+        return balanceForm;
+    }
 }
