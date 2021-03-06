@@ -16,9 +16,9 @@ public class CodeTransformService {
 
     @PostConstruct
     private void mapInit() throws IOException {
+        FileReader fr = null;
+        BufferedReader br = null;
         try{
-            FileReader fr;
-            BufferedReader br;
             String fileName = "/home/ec2-user/app/step2/gg.txt";
             String line;
             fr = new FileReader(fileName);
@@ -35,6 +35,8 @@ public class CodeTransformService {
             System.out.println(e);
         }
         finally{
+            fr.close();
+            br.close();
         }
         /*Resource resource = new ClassPathResource("gg.txt");
         String filePath = resource.getURI().getPath().substring(1);

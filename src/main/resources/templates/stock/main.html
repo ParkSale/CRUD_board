@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-sm-9 col-sm-offset-1 col-md-10 col-md-10 main">
             <h1 class="page-header" th:text='*{form.getCompanyName()}'></h1>
-            <h1 class="page-header" th:text='*{form.getNowCost()}'></h1>
+            <h1 class="page-header" id = "nowCost" th:text='*{form.getNowCost()}'></h1>
             <div class="row placeholders">
                 <div class="panel panel-primary col-xs-6 col-sm-3 placeholder">
                     <div class="panel-heading">전일</div>
@@ -61,17 +61,16 @@
             <h3>차트 그래프</h3>
             <hr>
             <div class="row">
-                <div class="col-md-4" id = "graph"></div>
+                <div class="col-md-3" id = "graph"></div>
                 <div class="col-md-4 col-md-offset-4">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4 col-md-offset-4">
-                        <button class = "btn-primary">매도하기</button>
+                    <div id="transaction" style="overflow:scroll; width:400px; height:300px; position:absolute; right : 150px"></div>
+                    <div class="col-md-offset-9">
+                        <button class="btn-primary" onclick="sell()">매도하기</button>
                         <p></p>
-                        <button class = "btn-danger">매수하기</button><p></p>
-                        <button class = "btn-info" onclick="accountSelect()">계좌선택</button>
-                        <h3 id = "accountInfo">계좌 : </h3>
-                        <h3 id = "balanceInfo">잔액 : </h3>
-                        <button class = "btn-success">보유현황</button>
+                        <button class="btn-danger" onclick="buyModal()">매수하기</button><p></p>
+                        <button class="btn-info" onclick="accountSelect()">계좌선택</button>
+                        <h3 id="accountInfo"></h3>
+                        <h3 id="balanceInfo"></h3>
                     </div>
                 </div>
             </div>
@@ -124,6 +123,24 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id = "exitModal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="buy" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">알림!</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>매수가</h3><input type="text" class="form-control" id = "buyPrice">
+                    <button class="btn btn-info" id = "nowValue" onclick="setNowPrice()">현재가</button>
+                    <h3>수량</h3><input type="text" class="form-control" id = "buyCount">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id = "buyYes">예</button>
+                    <button type="button" class="btn btn-default" id = "buyNo">아니오</button>
                 </div>
             </div>
         </div>
@@ -231,26 +248,75 @@
             alert("잠시 후 시도해주세요.")
         })
     }
-
+    selected_fintech_use_num = null;
+    selected_num = null;
     function selectAccount(i){
         accountInfo = document.getElementById("accountInfo");
         balanceInfo = document.getElementById("balanceInfo");
+        selected_num = i;
+        selected_fintech_use_num = fintech_use_num[i];
+        accountInfo.innerText = "계좌번호 : " + account_num[i];
         $.ajax({
             type:'GET',
-            url: '/stock/getBalance?fintech_use_num=' + fintech_use_num[i]
+            url: '/stock/getBalance?fintech_use_num=' + selected_fintech_use_num
         }).done(function(e){
             console.log(e);
             $("#pop").modal("hide");
-            accountInfo.innerText = "계좌번호 : " + account_num[i];
-            balanceInfo.innerText = "잔액 : " + e.balance.balance_amt + "원";
+            balanceInfo.innerText = "잔액 : " + e.balance + "원";
+            transaction = document.getElementById("transaction");
+            transaction.innerHTML="";
+            for(var i=0;i<e.list.length;++i){
+                transaction.innerHTML = "<h4> 회사 : " + e.transactions[e.list[i]].company + " 수량 : " + e.transactions[e.list[i]].number + " 평단가 :" + e.transactions[e.list[i]].price / e.transactions[e.list[i]].number + "</h4>" + transaction.innerHTML;
+            }
         }).fail(function(e){
             alert("잠시 후 시도해주세요");
-
-
-
-
         })
-
+    }
+    function buyModal(){
+        if(document.getElementById("accountInfo").innerText == ""){
+            alert("계좌를 먼저 선택해주세요");
+            return;
+        }
+        $("#buy").modal();
+        document.getElementById("buyNo").onclick = function(){
+            $("#buy").modal("hide");
+        }
+        document.getElementById("buyYes").onclick = function(){
+            buy();
+            $("#buy").modal("hide");
+        }
+    }
+    function buy(){
+        //매수
+        tmpCost = document.getElementById("buyPrice").value;
+        cost = "";
+        for(var i =0;i<tmpCost.length;++i){
+            if(tmpCost[i] == ',') continue;
+            cost += tmpCost[i];
+        }
+        count = document.getElementById("buyCount").value;
+        $.ajax({
+            type:'POST',
+            url: '/stock/buy',
+            data : JSON.stringify({fintech_use_num : selected_fintech_use_num,
+                code : code,
+                price : cost,
+                count : count
+            }),
+            dataType : 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function(e){
+            selectAccount(selected_num);
+        }).fail(function(e){
+            alert("잠시 후 시도해주세요");
+        })
+    }
+    function sell(){
+        //매도
+        alert("구현중입니다 ㅎ.ㅎ");
+    }
+    function setNowPrice(){
+        document.getElementById("buyPrice").value = document.getElementById("nowCost").innerText;
     }
 </script>
 </body>

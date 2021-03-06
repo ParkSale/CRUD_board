@@ -1,7 +1,7 @@
 package com.example.demo.stock.controller;
 
 import com.example.demo.stock.domain.AccountForm;
-import com.example.demo.stock.domain.BalanceForm;
+import com.example.demo.stock.domain.BuyStockForm;
 import com.example.demo.stock.domain.DayDataForm;
 import com.example.demo.stock.domain.StockForm;
 import com.example.demo.stock.service.CodeTransformService;
@@ -9,9 +9,7 @@ import com.example.demo.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import java.util.Map;
 public class StockController {
     private final StockService stockService;
     private final CodeTransformService codeTransformService;
+
     @GetMapping("/stock")
     public String stockMain(Model model, @RequestParam(value = "code",defaultValue = "005930") String code) throws IOException {
         StockForm stockForm = stockService.findInfo(code);
@@ -64,9 +63,21 @@ public class StockController {
     @GetMapping("/stock/getBalance")
     @ResponseBody
     public Map<String,Object> getBalance(@RequestParam String fintech_use_num){
-        Map<String,Object> map = new HashMap<>();
-        BalanceForm balanceForm = stockService.getBalance(fintech_use_num);
-        map.put("balance",balanceForm);
-        return map;
+        Map<String,Object> ret = new HashMap<>();
+        Map<String,Object> map = stockService.getBalance(fintech_use_num);
+        ret.put("balance",map.get("balance"));
+        ret.put("transactions",map.get("transactionForm"));
+        HashMap<String,Object> ma = (HashMap<String, Object>) map.get("transactionForm");
+        if(ma != null) ret.put("list",ma.keySet());
+        return ret;
     }
+
+    @PostMapping("/stock/buy")
+    @ResponseBody
+    public Map<String,Object> buyStock(@RequestBody BuyStockForm buyStockForm){
+        Map<String,Object> ret = new HashMap<>();
+        stockService.buyStock(buyStockForm);
+        return ret;
+    }
+
 }

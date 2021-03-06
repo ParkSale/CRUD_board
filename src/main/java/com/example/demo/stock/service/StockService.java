@@ -12,16 +12,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class StockService {
-
+    private HashMap<String,HashMap<String, TransactionForm>> transactionMap;
+    //fin_use_num넣으면
     private final CodeTransformService codeTransformService;
 
+    @PostConstruct
+    private void initTransaction(){
+        transactionMap = new HashMap<>();
+        HashMap<String,TransactionForm> map = new HashMap<>();
+        TransactionForm transactionForm = TransactionForm.builder().company("삼성전자").number(3L).price(83000L*3).build();
+        map.put("삼성전자",transactionForm);
+        TransactionForm transactionForm1 = TransactionForm.builder().company("NAVER").price(45000L*5).number(5L).build();
+        map.put("NAVER",transactionForm1);
+        transactionMap.put("199163705057884767352335",map);
+    }
 
     public List<DayDataForm> getDayData(String code, int page){
         final String url = "http://fchart.stock.naver.com/sise.nhn?symbol=" + code + "&timeframe=day&count=100&requestType=0";
@@ -84,25 +95,43 @@ public class StockService {
         return accountResponseForm.getRes_list();
     }
 
-    private int getRandomNumber(){
-        Random rand = new Random();
-        String rst = Integer.toString(rand.nextInt(8) + 1);
-        for(int i=0; i < 8; i++){
-            rst += Integer.toString(rand.nextInt(9));
+    public Map<String,Object> getBalance(String fintech_use_num) {
+        Long balance = 500000000L;
+        Map<String,TransactionForm> map = transactionMap.get(fintech_use_num);
+        if(map != null){
+            for (Map.Entry<String, TransactionForm> entry : map.entrySet()) {
+                String company = entry.getKey();
+                TransactionForm transactionForm = entry.getValue();
+                balance -= transactionForm.getPrice();
+            }
         }
-        return Integer.parseInt(rst);
+        HashMap<String,Object> ret = new HashMap<>();
+        ret.put("balance",balance);
+        ret.put("transactionForm",map);
+        return ret;
     }
-    public BalanceForm getBalance(String fintech_use_num) {
-        String url = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num";
-        String bank_tran_id = "T991637050U" + getRandomNumber();
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
-        String tran_dtime = format.format(System.currentTimeMillis());
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAwNzU5ODkwIiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2MjEyNTE1NTYsImp0aSI6IjFkODVjNTJjLTA3MDMtNDgzNS1iYzYwLTNhNjQ0OTQ2NmFhNyJ9.wIVG_HCtq-5M9ZIpoUq42y4fVg3C0BugaPzWrp8WI30");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("bank_tran_id",bank_tran_id).queryParam("fintech_use_num",fintech_use_num).queryParam("tran_dtime",tran_dtime);
-        HttpEntity<BalanceForm> entity = new HttpEntity<>(httpHeaders);
-        BalanceForm balanceForm = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,entity,BalanceForm.class).getBody();
-        return balanceForm;
+
+    public void buyStock(BuyStockForm buyStockForm) {
+        if(transactionMap.get(buyStockForm.getFintech_use_num()) == null) {
+            HashMap<String,TransactionForm> transactionFormHashMap = new HashMap<>();
+            TransactionForm transactionForm = TransactionForm.builder().company(codeTransformService.getCompanyName(buyStockForm.getCode())).number(buyStockForm.getCount()).price(buyStockForm.getPrice()* buyStockForm.getCount()).build();
+            transactionFormHashMap.put(codeTransformService.getCompanyName(buyStockForm.getCode()),transactionForm);
+            HashMap<String,TransactionForm> map = new HashMap<>();
+            map.put(codeTransformService.getCompanyName(buyStockForm.getCode()),transactionForm);
+            transactionMap.put(buyStockForm.getFintech_use_num(), map);
+        }
+        else if (transactionMap.get(buyStockForm.getFintech_use_num()).get(codeTransformService.getCompanyName(buyStockForm.getCode())) == null) {
+            TransactionForm transactionForm = TransactionForm.builder().company(codeTransformService.getCompanyName(buyStockForm.getCode()))
+                    .number(buyStockForm.getCount()).price(buyStockForm.getPrice()).build();
+            transactionMap.get(buyStockForm.getFintech_use_num()).put(codeTransformService.getCompanyName(buyStockForm.getCode()),transactionForm);
+
+        }
+        else{
+            TransactionForm transactionForm = transactionMap.get(buyStockForm.getFintech_use_num()).get(codeTransformService.getCompanyName(buyStockForm.getCode()));
+            transactionForm.setNumber(transactionForm.getNumber() + buyStockForm.getCount());
+            transactionForm.setPrice(transactionForm.getPrice() + buyStockForm.getCount() * buyStockForm.getPrice());
+            transactionMap.get(buyStockForm.getFintech_use_num()).put(codeTransformService.getCompanyName(buyStockForm.getCode()),transactionForm);
+
+        }
     }
 }
