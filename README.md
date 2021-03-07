@@ -1,6 +1,6 @@
 # CRUD_board
 
-# http://세일.웹.한국
+# http://www.세일.웹.한국
 
 # ERD
 
