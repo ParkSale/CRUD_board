@@ -1,9 +1,6 @@
 package com.example.demo.stock.controller;
 
-import com.example.demo.stock.domain.AccountForm;
-import com.example.demo.stock.domain.BuyStockForm;
-import com.example.demo.stock.domain.DayDataForm;
-import com.example.demo.stock.domain.StockForm;
+import com.example.demo.stock.domain.*;
 import com.example.demo.stock.service.CodeTransformService;
 import com.example.demo.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -66,9 +63,11 @@ public class StockController {
         Map<String,Object> ret = new HashMap<>();
         Map<String,Object> map = stockService.getBalance(fintech_use_num);
         ret.put("balance",map.get("balance"));
-        ret.put("transactions",map.get("transactionForm"));
         HashMap<String,Object> ma = (HashMap<String, Object>) map.get("transactionForm");
-        if(ma != null) ret.put("list",ma.keySet());
+        if(ma != null) {
+            ret.put("list",ma.keySet());
+            ret.put("transactions",ma);
+        }
         return ret;
     }
 
@@ -80,4 +79,17 @@ public class StockController {
         return ret;
     }
 
+    @GetMapping("/stock/info")
+    @ResponseBody
+    public Map<String,Object> getInfo(@RequestParam(value = "name") String company, @RequestParam(value="fintech_use_num") String fintech_use_num) throws IOException {
+        return stockService.getInfo(company,fintech_use_num);
+    }
+
+    @PostMapping("/stock/sell")
+    @ResponseBody
+    public Map<String,Object> sellStock(@RequestBody SellStockForm sellStockForm){
+        Map<String,Object> ret = new HashMap<>();
+        stockService.sellStock(sellStockForm);
+        return ret;
+    }
 }

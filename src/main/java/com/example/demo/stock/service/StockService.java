@@ -18,7 +18,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class StockService {
-    private HashMap<String,HashMap<String, TransactionForm>> transactionMap;
+    private HashMap<String,HashMap<String, TransactionForm>> transactionMap = new HashMap<>();
+    private HashMap<String,Long> balanceMap = new HashMap<>();
     private final CodeTransformService codeTransformService;
 
     public List<DayDataForm> getDayData(String code, int page){
@@ -83,17 +84,15 @@ public class StockService {
     }
 
     public Map<String,Object> getBalance(String fintech_use_num) {
-        Long balance = 500000000L;
-        Map<String,TransactionForm> map = transactionMap.get(fintech_use_num);
-        if(map != null){
-            for (Map.Entry<String, TransactionForm> entry : map.entrySet()) {
-                TransactionForm transactionForm = entry.getValue();
-                balance -= transactionForm.getPrice();
-            }
+        if(balanceMap.get(fintech_use_num) == null){
+            balanceMap.put(fintech_use_num,500000000L);
         }
+        Map<String,TransactionForm> map = transactionMap.get(fintech_use_num);
         HashMap<String,Object> ret = new HashMap<>();
-        ret.put("balance",balance);
-        ret.put("transactionForm",map);
+        if(map != null){
+            ret.put("transactionForm",map);
+        }
+        ret.put("balance",balanceMap.get(fintech_use_num));
         return ret;
     }
 
@@ -117,7 +116,33 @@ public class StockService {
             transactionForm.setNumber(transactionForm.getNumber() + buyStockForm.getCount());
             transactionForm.setPrice(transactionForm.getPrice() + buyStockForm.getCount() * buyStockForm.getPrice());
             transactionMap.get(buyStockForm.getFintech_use_num()).put(codeTransformService.getCompanyName(buyStockForm.getCode()),transactionForm);
+        }
+        Long balance = balanceMap.get(buyStockForm.getFintech_use_num()) - buyStockForm.getPrice()* buyStockForm.getCount();
+        balanceMap.put(buyStockForm.getFintech_use_num(),balance);
+    }
 
+    public Map<String,Object> getInfo(String company, String fintech_use_num) throws IOException {
+        Map<String,Object> ret = new HashMap<>();
+        HashMap<String, TransactionForm> map = transactionMap.get(fintech_use_num);
+        TransactionForm transactionForm = map.get(company);
+        StockForm stockForm = makeStockForm(codeTransformService.getCodeNumber(company));
+        ret.put("transaction",transactionForm);
+        ret.put("price",stockForm.getNowCost());
+        return ret;
+    }
+
+    public void sellStock(SellStockForm sellStockForm) {
+        Map<String,TransactionForm> map = transactionMap.get(sellStockForm.getFintech_use_num());
+        Long balance = balanceMap.get(sellStockForm.getFintech_use_num()) + sellStockForm.getCount()*sellStockForm.getPrice();
+        balanceMap.put(sellStockForm.getFintech_use_num(),balance);
+        TransactionForm transactionForm = map.get(sellStockForm.getName());
+        Long count = transactionForm.getNumber() - sellStockForm.getCount();
+        if(count != 0){
+            transactionForm.setNumber(count);
+            transactionForm.setPrice(transactionForm.getPrice() - sellStockForm.getCount()*sellStockForm.getPrice());
+        }
+        else{
+            map.remove(sellStockForm.getName());
         }
     }
 }

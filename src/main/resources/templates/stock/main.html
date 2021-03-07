@@ -63,9 +63,9 @@
             <div class="row">
                 <div class="col-md-3" id = "graph"></div>
                 <div class="col-md-4 col-md-offset-4">
-                    <div id="transaction" style="overflow:scroll; width:400px; height:300px; position:absolute; right : 150px"></div>
+                    <div id="transaction" style="overflow:scroll; width:550px; height:300px; position:absolute; right : 150px"></div>
                     <div class="col-md-offset-9">
-                        <button class="btn-primary" onclick="sell()">매도하기</button>
+                        <button class='btn-primary' onclick="sellModal()">매도하기</button>
                         <p></p>
                         <button class="btn-danger" onclick="buyModal()">매수하기</button><p></p>
                         <button class="btn-info" onclick="accountSelect()">계좌선택</button>
@@ -141,6 +141,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id = "buyYes">예</button>
                     <button type="button" class="btn btn-default" id = "buyNo">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sell" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">알림!</h4>
+                </div>
+                <div class="modal-body">
+                    <select class="form-control" id = "selectedStock">
+                    </select>
+                    <h3>매도가</h3><input type="text" class="form-control" id = "sellPrice">
+                    <h3>수량</h3><input type="text" class="form-control" id = "sellCount">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id = "sellYes">예</button>
+                    <button type="button" class="btn btn-default" id = "sellNo">아니오</button>
                 </div>
             </div>
         </div>
@@ -250,6 +269,7 @@
     }
     selected_fintech_use_num = null;
     selected_num = null;
+    balance = null;
     function selectAccount(i){
         accountInfo = document.getElementById("accountInfo");
         balanceInfo = document.getElementById("balanceInfo");
@@ -263,10 +283,29 @@
             console.log(e);
             $("#pop").modal("hide");
             balanceInfo.innerText = "잔액 : " + e.balance + "원";
+            balance = e.balance;
             transaction = document.getElementById("transaction");
             transaction.innerHTML="";
+            modalStockList = document.getElementById("selectedStock");
+            modalStockList.innerHTML="";
             for(var i=0;i<e.list.length;++i){
-                transaction.innerHTML = "<h4> 회사 : " + e.transactions[e.list[i]].company + " 수량 : " + e.transactions[e.list[i]].number + " 평단가 :" + e.transactions[e.list[i]].price / e.transactions[e.list[i]].number + "</h4>" + transaction.innerHTML;
+                avg = e.transactions[e.list[i]].price / e.transactions[e.list[i]].number;
+                transaction.innerHTML = "<h4>회사 : " + e.transactions[e.list[i]].company + " 평단가 :" + Math.floor(avg) + " 수량 : "+  e.transactions[e.list[i]].number + "</h4>" + transaction.innerHTML;
+                modalStockList.innerHTML = "<option value='" + e.transactions[e.list[i]].company + "'>" + e.transactions[e.list[i]].company + "</option>" + modalStockList.innerHTML;
+                if(i==0){
+                    $.ajax({
+                        type:'GET',
+                        url: '/stock/info',
+                        data: {fintech_use_num : selected_fintech_use_num, name : e.transactions[e.list[i]].company},
+                        dataType : 'json',
+                        contentType: 'application/json; charset=utf-8'
+                    }).done(function(e){
+                        $("#sellPrice").attr('placeholder', e.price);
+                        $("#sellCount").attr('placeholder', e.transaction.number);
+                    }).fail(function(e){
+                        alert("잠시 후 시도해주세요");
+                    })
+                }
             }
         }).fail(function(e){
             alert("잠시 후 시도해주세요");
@@ -282,8 +321,8 @@
             $("#buy").modal("hide");
         }
         document.getElementById("buyYes").onclick = function(){
-            buy();
-            $("#buy").modal("hide");
+            v = buy();
+            if(v != -1) $("#buy").modal("hide");
         }
     }
     function buy(){
@@ -295,6 +334,10 @@
             cost += tmpCost[i];
         }
         count = document.getElementById("buyCount").value;
+        if(cost * count > balance){
+            alert("잔액 초과");
+            return -1;
+        }
         $.ajax({
             type:'POST',
             url: '/stock/buy',
@@ -307,13 +350,60 @@
             contentType: 'application/json; charset=utf-8',
         }).done(function(e){
             selectAccount(selected_num);
+            return 0;
         }).fail(function(e){
             alert("잠시 후 시도해주세요");
         })
     }
     function sell(){
-        //매도
-        alert("구현중입니다 ㅎ.ㅎ");
+        if($("#sellCount").val() > $("#sellCount").attr('placeholder')){
+            alert("보유수량보다 많이 매도할 수 없습니다");
+            return;
+        }
+
+        $.ajax({
+            type:'POST',
+            url: '/stock/sell',
+            data : JSON.stringify({fintech_use_num : selected_fintech_use_num,
+                                    name : $("#selectedStock option:selected").val(),
+                                    price : $("#sellPrice").val(),
+                                    count : $("#sellCount").val()}),
+            dataType : 'json',
+            contentType : 'application/json; charset=utf-8'
+        }).done(function(e){
+            console.log(e);
+            selectAccount(selected_num);
+        }).fail(function(e){
+            console.log(e);
+        })
+    }
+    $(document).ready(function(){
+        $("#selectedStock").on('change',function(){
+            $.ajax({
+                type:'GET',
+                url: '/stock/info',
+                data: {fintech_use_num : selected_fintech_use_num, name : this.value},
+                dataType : 'json',
+                contentType: 'application/json; charset=utf-8'
+            }).done(function(e){
+                $("#sellPrice").attr('placeholder', e.price);
+                $("#sellCount").attr('placeholder', e.transaction.number);
+            }).fail(function(e){
+                alert("잠시 후 시도해주세요");
+            })
+        })
+    })
+    function sellModal(){
+        $("#sellPrice").val("");
+        $("#sellCount").val("");
+        $("#sell").modal();
+        document.getElementById("sellNo").onclick = function(){
+            $("#sell").modal("hide");
+        }
+        document.getElementById("sellYes").onclick = function(){
+            sell();
+            $("#sell").modal("hide");
+        }
     }
     function setNowPrice(){
         document.getElementById("buyPrice").value = document.getElementById("nowCost").innerText;
