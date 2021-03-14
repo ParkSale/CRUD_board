@@ -211,7 +211,14 @@
             alert("잠시 후 시도해주세요");
         })
     }
-
+    function removeDot(str){
+        ret = "";
+        for(var i=0;i<str.length;++i){
+            if(str[i] == ",") continue;
+            ret += str[i];
+        }
+        return ret;
+    }
     $(function(){
         $("#company").autocomplete({
             source : "/stock/companyAutoComplete",
@@ -327,13 +334,13 @@
     }
     function buy(){
         //매수
-        tmpCost = document.getElementById("buyPrice").value;
-        cost = "";
-        for(var i =0;i<tmpCost.length;++i){
-            if(tmpCost[i] == ',') continue;
-            cost += tmpCost[i];
+        if(removeDot($("#nowCost").text()) > removeDot($("#buyPrice").val())){
+            alert("현재가보다 싸게 매수할 수 없습니다");
+            return;
         }
-        count = document.getElementById("buyCount").value;
+
+        cost = removeDot(document.getElementById("buyPrice").value);
+        count = removeDot(document.getElementById("buyCount").value);
         if(cost * count > balance){
             alert("잔액 초과");
             return -1;
@@ -356,18 +363,27 @@
         })
     }
     function sell(){
-        if($("#sellCount").val() > $("#sellCount").attr('placeholder')){
+        if(removeDot($("#sellCount").val()) > removeDot($("#sellCount").attr('placeholder'))){
             alert("보유수량보다 많이 매도할 수 없습니다");
             return;
         }
-
+        if(removeDot($("#nowCost").text()) < removeDot($("#sellPrice").val())){
+            alert("현재가보다 비싸게 매도할 수 없습니다");
+            return;
+        }
+        if($("#sellCount").val() == ""){
+            $("#sellCount").val($("#sellCount").attr('placeholder'));
+        }
+        if($("#sellPrice").val() == ""){
+            $("#sellPrice").val($("#sellPrice").attr('placeholder'));
+        }
         $.ajax({
             type:'POST',
             url: '/stock/sell',
             data : JSON.stringify({fintech_use_num : selected_fintech_use_num,
                                     name : $("#selectedStock option:selected").val(),
-                                    price : $("#sellPrice").val(),
-                                    count : $("#sellCount").val()}),
+                                    price : removeDot($("#sellPrice").val()),
+                                    count : removeDot($("#sellCount").val())}),
             dataType : 'json',
             contentType : 'application/json; charset=utf-8'
         }).done(function(e){
@@ -394,6 +410,10 @@
         })
     })
     function sellModal(){
+        if(document.getElementById("accountInfo").innerText == ""){
+            alert("계좌를 먼저 선택해주세요");                                
+            return;
+        }
         $("#sellPrice").val("");
         $("#sellCount").val("");
         $("#sell").modal();
