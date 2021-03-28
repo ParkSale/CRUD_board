@@ -61,11 +61,11 @@
             <h3>차트 그래프</h3>
             <hr>
             <div class="row">
-                <div class="col-md-6" id="graph"><img src="https://ssl.pstatic.net/imgfinance/chart/item/candle/day/035420.png"></div>
+                <div id="graph"><img class="col-md-6 col-xs-6"src="https://ssl.pstatic.net/imgfinance/chart/item/candle/day/035420.png"></div>
 
-                <div id="transaction" class="col-md-3"></div>
+                <div id="transaction" class="col-md-3 col-xs-3"></div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-xs-3">
                     <button class="btn-primary" onclick="sellModal()">매도하기</button>
                     <p></p>
                     <button class="btn-danger" onclick="buyModal()">매수하기</button><p></p>
@@ -298,7 +298,7 @@
             modalStockList.innerHTML="";
             for(var i=0;i<e.list.length;++i){
                 avg = e.transactions[e.list[i]].price / e.transactions[e.list[i]].number;
-                transaction.innerHTML = "<h4>회사 : " + e.transactions[e.list[i]].company + " 평단가 :" + Math.floor(avg) + " 수량 : "+  e.transactions[e.list[i]].number + "</h4>" + transaction.innerHTML;
+                transaction.innerHTML = "<h4>회사 : " + e.transactions[e.list[i]].company + " 평단가 : " + Math.floor(avg) + " 수량 : "+  e.transactions[e.list[i]].number + "</h4>" + transaction.innerHTML;
                 modalStockList.innerHTML = "<option value='" + e.transactions[e.list[i]].company + "'>" + e.transactions[e.list[i]].company + "</option>" + modalStockList.innerHTML;
                 if(i==0){
                     $.ajax({
